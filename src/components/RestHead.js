@@ -30,9 +30,9 @@ export default function RestHead({ x, duration, selected, dotted, ghost, hideLab
       {dotted && !ghost && <circle cx={x + scaledWidth / 2 + 6} cy={STAFF_TOP + LINE_GAP * 1.5} r={2.5} fill={color}/>}
 
       {!hideLabel && (
-        <text x={x} y={LABEL_Y} textAnchor="middle" fontSize={10}
-          fill={ghost ? "#a0c4ff" : "#1a1a2e"}
-          fontFamily="Oldenburg, Georgia, serif">
+        <text x={x} y={LABEL_Y} textAnchor="middle" fontSize={14} fontWeight={600}
+          fill={ghost ? "#a0c4ff" : "#636363"}
+          fontFamily="system-ui, -apple-system, sans-serif">
           {restLabel}
         </text>
       )}

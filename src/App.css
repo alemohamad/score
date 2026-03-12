@@ -5,43 +5,118 @@ body {
 }
 
 .app {
-  font-family: Oldenburg, Georgia, serif;
-  background: #fdf6e3;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #222224;
   min-height: 100vh;
   outline: none;
   user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #1a1a2e;
+  color: #fff;
 }
 
-/* ─── Header ──────────────────────────────────────────────────────────────── */
+/* ─── Duration bar ────────────────────────────────────────────────────────── */
 
-.header {
-  margin-top: 16px;
-  margin-bottom: 8px;
-  text-align: center;
+.menu-bar {
+  width: 100%;
+  border-top: 2px solid #171618;
+  border-bottom: 2px solid #171618;
+  margin: 24px 0 36px;
+  font-weight: 600;
+}
+
+.menu-bar__content {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-}
-
-.header__title {
-  font-size: 22px;
-  margin: 0;
-  letter-spacing: 3px;
-  font-weight: 700;
-}
-
-.header__controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
   justify-content: center;
+  gap: 2px;
+  padding: 0;
 }
+
+.menu-bar__btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+}
+
+.menu-bar__separator {
+  width: 2px;
+  align-self: stretch;
+  background: #171618;
+}
+
+.menu-bar__count {
+  color: #A2A49F;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: default;
+  user-select: none;
+}
+
+.menu-bar__btn--active {
+  background: transparent;
+}
+
+.menu-bar__tempo-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background: #A2A49F;
+  outline: none;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.menu-bar__tempo-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+}
+
+.menu-bar__tempo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1767AE;
+  border: none;
+  margin-top: -6px;
+  cursor: pointer;
+}
+
+.menu-bar__tempo-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #A2A49F;
+}
+
+.menu-bar__tempo-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1767AE;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-bar__tempo-slider::-moz-range-progress {
+  background: #1767AE;
+  height: 4px;
+  border-radius: 2px;
+}
+
 
 /* ─── Pill group (Toggle, TimeSignature, Language) ─────────────────────── */
 
@@ -62,7 +137,7 @@ body {
   padding: 4px 16px;
   font-size: 12px;
   cursor: pointer;
-  font-family: Oldenburg, Georgia, serif;
+  font-family: system-ui, -apple-system, sans-serif;
   transition: all 0.2s;
   font-weight: 400;
 }
@@ -101,14 +176,14 @@ body {
 }
 
 .staff-container {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 20px #0002;
-  padding: 8px;
+  background: #d8d8d8;
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 36px;
   margin-bottom: 16px;
   overflow-x: auto;
   touch-action: none;
-  transform: scale(0.8);
+  transform: scale(0.76);
   transform-origin: top center;
 }
 
@@ -125,37 +200,6 @@ body {
   padding: 8px 12px;
 }
 
-.playback-controls__play {
-  background: #2a9d8f;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: Oldenburg, Georgia, serif;
-  min-width: 80px;
-}
-
-.playback-controls__play--stop {
-  background: #e63946;
-}
-
-.playback-controls__toggle {
-  background: #ede8d5;
-  color: #1a1a2e;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 12px;
-  font-family: Oldenburg, Georgia, serif;
-}
-
-.playback-controls__toggle--active {
-  background: #e63946;
-  color: #fff;
-}
 
 .playback-controls__tempo {
   display: flex;
@@ -210,7 +254,7 @@ body {
   padding: 6px 12px;
   cursor: pointer;
   font-size: 12px;
-  font-family: Oldenburg, Georgia, serif;
+  font-family: system-ui, -apple-system, sans-serif;
   transition: all 0.15s;
   min-height: 36px;
 }
@@ -310,7 +354,7 @@ body {
 .keyboard-shortcuts__key-note {
   font-size: 8px;
   color: #999;
-  font-family: Oldenburg, Georgia, serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .keyboard-shortcuts__hint {

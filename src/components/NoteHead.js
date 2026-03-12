@@ -68,9 +68,9 @@ export default function NoteHead({ x, y, duration, selected, dotted, accidental,
 
       {/* Note label */}
       {noteLabel && !hideLabel && (
-        <text x={x} y={LABEL_Y} textAnchor="middle" fontSize={10}
-          fill={ghost ? "#a0c4ff" : "#1a1a2e"}
-          fontFamily="Oldenburg, Georgia, serif">
+        <text x={x} y={LABEL_Y} textAnchor="middle" fontSize={14} fontWeight={600}
+          fill={ghost ? "#a0c4ff" : "#636363"}
+          fontFamily="system-ui, -apple-system, sans-serif">
           {noteLabel}
         </text>
       )}

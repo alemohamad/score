@@ -23,10 +23,10 @@ import Beams, { calculateBeamGroups, getBeamDirection } from "./components/Beams
 import Toggle from "./components/Toggle";
 import TimeSignatureSelector from "./components/TimeSignatureSelector";
 import LanguageSwitcher from "./components/LanguageSwitcher";
-import StatusBar from "./components/StatusBar";
 import PlaybackControls from "./components/PlaybackControls";
 import Controls from "./components/Controls";
 import KeyboardShortcuts from "./components/KeyboardShortcuts";
+import MenuBar from "./components/MenuBar";
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
@@ -280,21 +280,8 @@ export default function App() {
       onKeyDown={handleKeyDown}
       className="app"
     >
-      {/* Header */}
-      <div className="header">
-        <h1 className="header__title">Score</h1>
-        <div className="header__controls">
-          <Toggle noteSystem={noteSystem} setNoteSystem={setNoteSystem} onAfterChange={focusContainer} />
-          <TimeSignatureSelector timeSignature={timeSignature} setTimeSignature={setTimeSignature} onAfterChange={focusContainer} />
-          <LanguageSwitcher onAfterChange={focusContainer} />
-        </div>
-      </div>
-
-      {/* Status bar */}
-      <StatusBar
-        duration={duration} dotted={dotted} triplet={triplet}
-        accidental={accidental} noteCount={notes.length}
-      />
+      {/* Menu bar */}
+      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} setSelectedIdx={setSelectedIdx} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} onAfterChange={focusContainer} />
 
       {/* Staff */}
       <div className="staff-container-wrapper">
@@ -585,27 +572,6 @@ export default function App() {
           );
         })}
       </div>
-      </div>
-
-      {/* Controls */}
-      <div className="controls-section">
-        <PlaybackControls
-          isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback}
-          isMuted={isMuted} setIsMuted={setIsMuted}
-          hideLabels={hideLabels} setHideLabels={setHideLabels}
-          tempo={tempo} setTempo={setTempo}
-          hasNotes={notes.length > 0} onAfterChange={focusContainer}
-        />
-        <Controls
-          duration={duration} setDuration={setDuration}
-          dotted={dotted} setDotted={setDotted}
-          triplet={triplet} setTriplet={setTriplet}
-          accidental={accidental} setAccidental={setAccidental}
-          addRest={addRest}
-          selectedIdx={selectedIdx} deleteSelected={deleteSelected}
-          notes={notes} setNotes={setNotes} setSelectedIdx={setSelectedIdx}
-          onAfterChange={focusContainer}
-        />
       </div>
 
       {/* Keyboard shortcuts */}
