@@ -1,0 +1,59 @@
+{
+  "title": "Score",
+  "noteSystem": {
+    "solfeo": "Do Re Mi",
+    "letter": "A B C"
+  },
+  "duration": {
+    "whole": "Whole",
+    "half": "Half",
+    "quarter": "Quarter",
+    "eighth": "Eighth",
+    "sixteenth": "Sixteenth"
+  },
+  "status": {
+    "dotted": "Dotted",
+    "triplet": "Triplet",
+    "on": "ON",
+    "off": "OFF",
+    "sharp": "Sharp",
+    "flat": "Flat",
+    "natural": "Natural",
+    "noAccidental": "No accidental",
+    "note": "note",
+    "notes": "notes"
+  },
+  "playback": {
+    "play": "Play",
+    "stop": "Stop",
+    "muted": "Muted",
+    "sound": "Sound",
+    "namesOn": "Names On",
+    "namesOff": "Names Off",
+    "tempo": "Tempo"
+  },
+  "controls": {
+    "duration": "DURATION:",
+    "modifiers": "MODIFIERS:",
+    "rest": "Rest",
+    "restLabel": "rest",
+    "deleteSelected": "Delete selected note"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "notes": "NOTES (G3 → B5):",
+    "whole": "Whole",
+    "half": "Half",
+    "quarter": "Quarter",
+    "eighth": "Eighth",
+    "sixteenth": "Sixteenth",
+    "sharp": "Sharp",
+    "flat": "Flat",
+    "natural": "Natural",
+    "dotted": "Dotted",
+    "triplet": "Triplet",
+    "rest": "Rest",
+    "delete": "Delete",
+    "timeSignature": "Time Sig."
+  }
+}

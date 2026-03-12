@@ -1,0 +1,59 @@
+{
+  "title": "Score",
+  "noteSystem": {
+    "solfeo": "Do Re Mi",
+    "letter": "A B C"
+  },
+  "duration": {
+    "whole": "Redonda",
+    "half": "Blanca",
+    "quarter": "Negra",
+    "eighth": "Corchea",
+    "sixteenth": "Semicorchea"
+  },
+  "status": {
+    "dotted": "Puntillo",
+    "triplet": "Tresillo",
+    "on": "ON",
+    "off": "OFF",
+    "sharp": "Sostenido",
+    "flat": "Bemol",
+    "natural": "Natural",
+    "noAccidental": "Sin alteración",
+    "note": "nota",
+    "notes": "notas"
+  },
+  "playback": {
+    "play": "Reproducir",
+    "stop": "Detener",
+    "muted": "Silenciado",
+    "sound": "Sonido",
+    "namesOn": "Nombres On",
+    "namesOff": "Nombres Off",
+    "tempo": "Tempo"
+  },
+  "controls": {
+    "duration": "DURACIÓN:",
+    "modifiers": "MODIFICAR:",
+    "rest": "Silencio",
+    "restLabel": "silencio",
+    "deleteSelected": "Borrar nota seleccionada"
+  },
+  "shortcuts": {
+    "title": "Atajos de teclado",
+    "notes": "NOTAS (G3 → B5):",
+    "whole": "Redonda",
+    "half": "Blanca",
+    "quarter": "Negra",
+    "eighth": "Corchea",
+    "sixteenth": "Semicorchea",
+    "sharp": "Sostenido",
+    "flat": "Bemol",
+    "natural": "Natural",
+    "dotted": "Puntillo",
+    "triplet": "Tresillo",
+    "rest": "Silencio",
+    "delete": "Borrar",
+    "timeSignature": "Compás"
+  }
+}
