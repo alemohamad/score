@@ -7,6 +7,7 @@ export const MEASURES_PER_LINE = 4;
 export const NOTE_CENTER_OFFSET = 15;
 export const LABEL_Y       = STAFF_TOP + LINE_GAP * 4 + 57;
 
+export const SIXTEENTH_GAP_ADJUST = -1;
 export const STEM_LENGTH    = 28;
 export const BEAM_THICKNESS = 4;
 export const BEAM_GAP       = 6;

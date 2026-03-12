@@ -5,7 +5,7 @@ import "./App.css";
 
 // Constants
 import { STAFF_NOTES, DURATION_KEYS, TIME_SIGNATURES, KEY_TO_NOTE } from "./constants/music";
-import { STAFF_TOP, LINE_GAP, STAFF_LEFT, NOTE_START_X, BEAT_WIDTH, MEASURES_PER_LINE } from "./constants/staff";
+import { STAFF_TOP, LINE_GAP, STAFF_LEFT, NOTE_START_X, BEAT_WIDTH, MEASURES_PER_LINE, SIXTEENTH_GAP_ADJUST } from "./constants/staff";
 import { G_CLEF, REPEAT_PATHS } from "./constants/svgPaths";
 
 // Utils
@@ -464,8 +464,18 @@ export default function App() {
                 {(() => {
                   const beamGroups = calculateBeamGroups(lineNotes, beatsPerMeasure);
 
+                  // Build per-note x adjustments for beamed sixteenth groups
+                  const sixteenthXAdjust = new Map();
+                  beamGroups.forEach(group => {
+                    if (group[0].duration === "sixteenth") {
+                      group.forEach((note, i) => {
+                        sixteenthXAdjust.set(note.id, i * SIXTEENTH_GAP_ADJUST);
+                      });
+                    }
+                  });
+
                   const getNoteRenderInfo = (note) => ({
-                    x: getNoteX(note.beatPosition),
+                    x: getNoteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0),
                     y: staffY(note.pos),
                     pos: note.pos
                   });
@@ -483,7 +493,7 @@ export default function App() {
                       <Beams beamGroups={beamGroups} getNoteRenderInfo={getNoteRenderInfo} />
 
                       {lineNotes.map((note) => {
-                        const x = getNoteX(note.beatPosition);
+                        const x = getNoteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
                         const globalIdx = notes.findIndex(n => n.id === note.id);
 
                         if (note.isRest) {
