@@ -94,15 +94,22 @@ body {
 
 /* ─── Staff container ─────────────────────────────────────────────────────── */
 
+.staff-container-wrapper {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .staff-container {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 20px #0002;
   padding: 8px;
   margin-bottom: 16px;
-  width: 100%;
   overflow-x: auto;
   touch-action: none;
+  transform: scale(0.8);
+  transform-origin: top center;
 }
 
 /* ─── Playback controls ───────────────────────────────────────────────────── */

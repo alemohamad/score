@@ -200,7 +200,8 @@ export default function App() {
     const rect    = svgEl.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x: clientX - rect.left, y: clientY - rect.top - 18 };
+    const scale   = rect.width / svgEl.getAttribute("width");
+    return { x: (clientX - rect.left) / scale, y: (clientY - rect.top) / scale - 18 };
   }
 
   // ── Derived values ─────────────────────────────────────────────────────────
@@ -296,6 +297,7 @@ export default function App() {
       />
 
       {/* Staff */}
+      <div className="staff-container-wrapper">
       <div className="staff-container" style={{ maxWidth: staffWidth + 30 }}>
         {Array.from({ length: totalLines }).map((_, lineIdx) => {
           const lineNotes = getNotesForLine(lineIdx);
@@ -582,6 +584,7 @@ export default function App() {
             </svg>
           );
         })}
+      </div>
       </div>
 
       {/* Controls */}
