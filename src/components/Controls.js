@@ -8,7 +8,8 @@ export default function Controls({
   accidental, setAccidental,
   addRest,
   selectedIdx, deleteSelected,
-  notes, onAfterChange,
+  notes, setNotes, setSelectedIdx,
+  onAfterChange,
 }) {
   const { t } = useTranslation();
 
@@ -62,16 +63,46 @@ export default function Controls({
           <button
             onClick={() => {
               const exportData = JSON.stringify(notes, null, 2);
-              navigator.clipboard.writeText(exportData).then(() => {
-                alert("Notes copied to clipboard!");
-              }).catch(() => {
-                prompt("Copy this data:", JSON.stringify(notes));
-              });
+              const blob = new Blob([exportData], { type: "application/json" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "score.json";
+              a.click();
+              URL.revokeObjectURL(url);
             }}
             className="control-button control-button--export">
             Export
           </button>
         )}
+
+        <button
+          onClick={() => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json";
+            input.onchange = (e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+              file.text().then(text => {
+                try {
+                  const imported = JSON.parse(text);
+                  if (Array.isArray(imported)) {
+                    setNotes(imported);
+                    setSelectedIdx(null);
+                  } else {
+                    alert("Invalid format: expected an array of notes.");
+                  }
+                } catch {
+                  alert("Could not parse file as JSON.");
+                }
+              });
+            };
+            input.click();
+          }}
+          className="control-button control-button--import">
+          Import
+        </button>
       </div>
     </>
   );

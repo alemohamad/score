@@ -600,7 +600,8 @@ export default function App() {
           accidental={accidental} setAccidental={setAccidental}
           addRest={addRest}
           selectedIdx={selectedIdx} deleteSelected={deleteSelected}
-          notes={notes} onAfterChange={focusContainer}
+          notes={notes} setNotes={setNotes} setSelectedIdx={setSelectedIdx}
+          onAfterChange={focusContainer}
         />
       </div>
 
