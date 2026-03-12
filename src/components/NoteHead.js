@@ -4,7 +4,7 @@ import { staffY } from "../utils/staff";
 
 export default function NoteHead({ x, y, duration, selected, dotted, accidental, pos, noteLabel, ghost, beamed, forceDirection, hideLabel }) {
   const isUp = forceDirection !== undefined ? forceDirection : pos < 9;
-  const color = ghost ? "#a0c4ff" : selected ? "#e63946" : "#1a1a2e";
+  const color = ghost ? "#1767AE" : selected ? "#e63946" : "#1a1a2e";
   const opacity = ghost ? 0.7 : 1;
 
   const getNotePath = () => {
@@ -69,7 +69,7 @@ export default function NoteHead({ x, y, duration, selected, dotted, accidental,
       {/* Note label */}
       {noteLabel && !hideLabel && (
         <text x={x} y={LABEL_Y} textAnchor="middle" fontSize={14} fontWeight={600}
-          fill={ghost ? "#a0c4ff" : "#636363"}
+          fill={ghost ? "#1767AE" : "#636363"}
           fontFamily="system-ui, -apple-system, sans-serif">
           {noteLabel}
         </text>
