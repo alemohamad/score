@@ -20,6 +20,7 @@
     "flat": "Bemol",
     "natural": "Natural",
     "noAccidental": "Sin alteración",
+    "slur": "Ligadura",
     "note": "nota",
     "notes": "notas"
   },
@@ -62,6 +63,7 @@
     "natural": "Natural",
     "dotted": "Puntillo",
     "triplet": "Tresillo",
+    "slur": "Ligadura",
     "rest": "Silencio",
     "delete": "Borrar",
     "timeSignature": "Compás",

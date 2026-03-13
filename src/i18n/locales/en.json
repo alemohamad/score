@@ -20,6 +20,7 @@
     "flat": "Flat",
     "natural": "Natural",
     "noAccidental": "No accidental",
+    "slur": "Tie",
     "note": "note",
     "notes": "notes"
   },
@@ -62,6 +63,7 @@
     "natural": "Natural",
     "dotted": "Dotted",
     "triplet": "Triplet",
+    "slur": "Tie",
     "rest": "Rest",
     "delete": "Delete",
     "timeSignature": "Time Sig.",

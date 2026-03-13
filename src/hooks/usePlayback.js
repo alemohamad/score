@@ -36,16 +36,41 @@ export default function usePlayback(notes) {
     const totalBeats = getTotalBeats(notes);
     const playedNotes = new Set();
 
+    // Build a set of note indices that are tied to a previous note (should not trigger separately)
+    const tiedIndices = new Set();
+    for (let i = 0; i < notes.length - 1; i++) {
+      const note = notes[i];
+      const next = notes[i + 1];
+      if (note.slur && !note.isRest && !next.isRest &&
+          note.note === next.note && note.octave === next.octave &&
+          note.accidental === next.accidental) {
+        tiedIndices.add(i + 1);
+      }
+    }
+
+    function getTiedDuration(idx) {
+      let totalDuration = BEAT_VALUES[notes[idx].duration] || 1;
+      let j = idx;
+      while (j < notes.length - 1 && notes[j].slur && !notes[j + 1].isRest &&
+             notes[j].note === notes[j + 1].note && notes[j].octave === notes[j + 1].octave &&
+             notes[j].accidental === notes[j + 1].accidental) {
+        j++;
+        totalDuration += BEAT_VALUES[notes[j].duration] || 1;
+      }
+      return totalDuration;
+    }
+
     function playNotesAtBeat(beat) {
       if (isMuted) return;
       notes.forEach((note, idx) => {
         if (note.isRest) return;
+        if (tiedIndices.has(idx)) return; // Skip tied continuation notes
         const noteStart = note.startBeat !== undefined ? note.startBeat : 0;
         if (beat >= noteStart && !playedNotes.has(idx)) {
           playedNotes.add(idx);
           const acc = note.accidental === "sharp" ? "#" : note.accidental === "flat" ? "b" : "";
           const noteName = `${note.note}${acc}${note.octave}`;
-          const noteDuration = BEAT_VALUES[note.duration] || 1;
+          const noteDuration = getTiedDuration(idx);
           synth.triggerAttackRelease(noteName, `${noteDuration * (60 / tempo)}s`);
         }
       });

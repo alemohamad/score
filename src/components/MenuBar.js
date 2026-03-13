@@ -60,7 +60,7 @@ const UPLOAD_PATHS = [
   "M46,65 C48.6521649,65 51.195704,63.9464341 53.0710678,62.0710703 C54.9464316,60.1957065 56.0000611,57.6521674 56.0000611,55 L56.0000611,19.6600025 C56.0083238,17.5363188 55.165548,15.4978098 53.66,14 L43,3.34000248 C41.4984232,1.84009391 39.4623704,0.998333557 37.34,1 L10,1 C4.4771525,1 2.27373675e-13,5.47715498 2.27373675e-13,11 L2.27373675e-13,55 C2.27373675e-13,57.6521674 1.0535684,60.1957065 2.92893219,62.0710703 C4.80429597,63.9464341 7.3478351,65 10,65 L46,65 Z M8,55.0000025 L8,11.0000025 C8,9.89543298 8.8954305,9.00000248 10,9.00000248 L37.34,9.00000248 L48,19.6600025 L48,55.0000025 C48,56.104572 47.1045695,57.0000025 46,57.0000025 L10,57.0000025 C8.8954305,57.0000025 8,56.104572 8,55.0000025 Z",
 ];
 
-export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, selectedIdx, setSelectedIdx, updateSelectedNote, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
+export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, slur, setSlur, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, selectedIdx, setSelectedIdx, updateSelectedNote, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
   const { t } = useTranslation();
 
   const dottedLabel = t("status.dotted");
@@ -77,6 +77,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
     { label: t("shortcuts.natural"), key: "N" },
     { label: t("shortcuts.save"), key: "⇧S" },
     { label: t("shortcuts.quarter"), key: "3" },
+    { label: t("shortcuts.slur"), key: "," },
     { label: t("shortcuts.triplet"), key: "[" },
     { label: t("shortcuts.open"), key: "⇧O" },
     { label: t("shortcuts.half"), key: "4" },
@@ -199,12 +200,25 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         <div className="menu-bar__separator" />
 
         <button
+          className={`menu-bar__btn ${slur ? "menu-bar__btn--active" : ""}`}
+          title={t("status.slur")}
+          aria-label={t("status.slur")}
+          onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("slur", !note.slur); } setSlur(s => { if (!s) setTriplet(false); return !s; }); onAfterChange?.(); }}
+        >
+          <svg viewBox="0 0 89 101" width="20" height="20" aria-hidden="true">
+            <path d="M27.0555311,68.458 L27.0555311,0.5499 C27.0555311,0.246 26.8153016,0 26.5052016,0 L24.0753016,0 C23.7752016,0 23.5252016,0.246 23.5252016,0.5499 L23.5252016,62.9409 C19.9353016,61.156 14.4553016,61.4799 9.29525157,64.166 C2.11520157,67.898 -1.71475843,74.75198 0.745205571,79.47396 C3.19528157,84.196983 11.0052016,85.00094 18.1853016,81.26894 C24.1753016,78.15499 27.0853016,72.852 27.0555311,68.458 Z" fill={slur ? "#1767AE" : "#A2A49F"} />
+            <path d="M88.0555311,68.458 L88.0555311,0.5499 C88.0555311,0.246 87.8153016,0 87.5052016,0 L85.0753016,0 C84.7752016,0 84.5252016,0.246 84.5252016,0.5499 L84.5252016,62.9409 C80.9353016,61.156 75.4553016,61.4799 70.2952516,64.166 C63.1152016,67.898 59.2852416,74.75198 61.7452056,79.47396 C64.1952816,84.196983 72.0052016,85.00094 79.1853016,81.26894 C85.1753016,78.15499 88.0853016,72.852 88.0555311,68.458 Z" fill={slur ? "#1767AE" : "#A2A49F"} />
+            <path d="M16.9046058,87.8058574 C24.3710665,92.9235954 33.586914,95.4824644 44.5521484,95.4824644 C55.5173828,95.4824644 64.4494253,92.9235954 71.3482759,87.8058574 C72.3965529,88.3745407 72.8509422,88.8103165 72.7114439,89.1131848 C69.2011904,96.7343857 58.5246616,100.641188 44.5521484,100.641188 C30.3947821,100.641188 19.7635492,96.937373 15.8280929,89.1131848 C15.7079959,88.8744167 16.0668336,88.4386409 16.9046058,87.8058574 Z" fill={slur ? "#1767AE" : "#A2A49F"} />
+          </svg>
+        </button>
+
+        <button
           className={`menu-bar__btn ${triplet ? "menu-bar__btn--active" : ""}`}
           title={t("status.triplet")}
           aria-label={t("status.triplet")}
-          onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("triplet", !note.triplet); } setTriplet(t => !t); onAfterChange?.(); }}
+          onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("triplet", !note.triplet); } setTriplet(t => { if (!t) setSlur(false); return !t; }); onAfterChange?.(); }}
         >
-          <svg viewBox="0 0 44 50" width="24" height="24" aria-hidden="true">
+          <svg viewBox="0 0 44 50" width="24" height="24" style={{marginTop: -3}} aria-hidden="true">
             {/* 3 beamed eighth notes */}
             <ellipse cx="6" cy="44" rx="5" ry="3.5" transform="rotate(-20 6 44)" fill={triplet ? "#1767AE" : "#A2A49F"} />
             <ellipse cx="20" cy="44" rx="5" ry="3.5" transform="rotate(-20 20 44)" fill={triplet ? "#1767AE" : "#A2A49F"} />

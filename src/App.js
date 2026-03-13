@@ -33,6 +33,7 @@ export default function App() {
   const [duration,    setDuration]    = useState("quarter");
   const [dotted,      setDotted]      = useState(false);
   const [triplet,     setTriplet]     = useState(false);
+  const [slur,        setSlur]        = useState(false);
   const [accidental,  setAccidental]  = useState(null);
   const [noteSystem,  setNoteSystem]  = useState("solfeo");
   const [ghostNote,   setGhostNote]   = useState(null);
@@ -98,6 +99,17 @@ export default function App() {
       const currentTotalBeats = getTotalBeats(ns);
       const snappedBeat = snapToGrid(currentTotalBeats, duration, triplet);
 
+      const newNotes = [...ns];
+
+      // If slur is active, mark the previous note as slur start
+      if (slur && newNotes.length > 0) {
+        const prevIdx = newNotes.length - 1;
+        const prev = newNotes[prevIdx];
+        if (!prev.isRest && !prev.slur) {
+          newNotes[prevIdx] = { ...prev, slur: true };
+        }
+      }
+
       const newNote = {
         ...noteData,
         duration,
@@ -108,7 +120,7 @@ export default function App() {
         startBeat: snappedBeat,
       };
 
-      const newNotes = [...ns, newNote];
+      newNotes.push(newNote);
 
       if (triplet) {
         let tripletCount = 0;
@@ -125,12 +137,17 @@ export default function App() {
         }
       }
 
+      // Auto-deselect slur after the second note
+      if (slur) {
+        setTimeout(() => setSlur(false), 0);
+      }
+
       return newNotes;
     });
     setAccidental(null);
     setDotted(false);
     setSelectedIdx(null);
-  }, [duration, dotted, triplet, accidental]);
+  }, [duration, dotted, triplet, slur, accidental]);
 
   // ── Add a rest ────────────────────────────────────────────────────────────────
   const addRest = useCallback(() => {
@@ -229,7 +246,15 @@ export default function App() {
         const note = notes[selectedIdx];
         updateSelectedNote("triplet", !note.triplet);
       }
-      setTriplet(t => !t);
+      setTriplet(t => { if (!t) setSlur(false); return !t; });
+      return;
+    }
+    if (key === ",") {
+      if (selectedIdx !== null) {
+        const note = notes[selectedIdx];
+        updateSelectedNote("slur", !note.slur);
+      }
+      setSlur(s => { if (!s) setTriplet(false); return !s; });
       return;
     }
     if (key === "v") {
@@ -426,7 +451,7 @@ export default function App() {
       className="app"
     >
       {/* Menu bar */}
-      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} selectedIdx={selectedIdx} setSelectedIdx={setSelectedIdx} updateSelectedNote={updateSelectedNote} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
+      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} slur={slur} setSlur={setSlur} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} selectedIdx={selectedIdx} setSelectedIdx={setSelectedIdx} updateSelectedNote={updateSelectedNote} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
 
       {/* Staff */}
       <div className="staff-container-wrapper">
@@ -675,6 +700,45 @@ export default function App() {
                           </g>
                         );
                       })}
+
+                      {/* Slur/tie curves */}
+                      {(() => {
+                        const curves = [];
+                        for (let i = 0; i < lineNotes.length; i++) {
+                          const note = lineNotes[i];
+                          if (!note.slur || note.isRest) continue;
+                          // Find the next note in lineNotes
+                          const nextNote = lineNotes[i + 1];
+                          if (!nextNote || nextNote.isRest) continue;
+
+                          const x1 = getNoteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
+                          const x2 = getNoteX(nextNote.beatPosition) + (sixteenthXAdjust.get(nextNote.id) || 0);
+                          const y1 = staffY(note.pos);
+                          const y2 = staffY(nextNote.pos);
+
+                          // Determine curve direction based on stem directions
+                          const stemUp1 = noteBeamDirection.has(note.id) ? noteBeamDirection.get(note.id) : note.pos < 9;
+                          const stemUp2 = noteBeamDirection.has(nextNote.id) ? noteBeamDirection.get(nextNote.id) : nextNote.pos < 9;
+
+                          // If both stems up, curve below; if both down, curve above; if mixed, curve above
+                          const curveBelow = stemUp1 && stemUp2;
+                          const offset = curveBelow ? 24 : -24;
+                          const startY = y1 + (curveBelow ? 6 : -6);
+                          const endY = y2 + (curveBelow ? 6 : -6);
+                          const midX = (x1 + x2) / 2;
+                          const outerCpY = (startY + endY) / 2 + offset;
+                          const innerCpY = (startY + endY) / 2 + offset * 0.85;
+
+                          curves.push(
+                            <path
+                              key={`slur-${note.id}`}
+                              d={`M${x1 - 2},${startY} Q${midX},${outerCpY} ${x2 + 2},${endY} Q${midX},${innerCpY} ${x1 - 2},${startY} Z`}
+                              fill="#1a1a2e"
+                            />
+                          );
+                        }
+                        return curves;
+                      })()}
 
                       {/* Triplet brackets */}
                       {(() => {
