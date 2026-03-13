@@ -49,7 +49,7 @@ export default function App() {
     isPlaying, playheadBeat, tempo, setTempo,
     isMuted, setIsMuted,
     startPlayback, stopPlayback,
-  } = usePlayback(notes);
+  } = usePlayback(notes, repeats, timeSignature.beats);
 
   useEffect(() => { containerRef.current?.focus(); }, []);
 
