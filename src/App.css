@@ -80,6 +80,10 @@ body {
   background: transparent;
 }
 
+.menu-bar__btn--active svg {
+  filter: drop-shadow(0 0 4px var(--accent));
+}
+
 .menu-bar__tempo-slider {
   -webkit-appearance: none;
   appearance: none;
