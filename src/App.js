@@ -335,7 +335,10 @@ export default function App() {
   const totalBeats = getTotalBeats(notes);
   const beatsPerMeasure = timeSignature.beats;
   const beatsPerLine = MEASURES_PER_LINE * beatsPerMeasure;
-  const staffWidth = NOTE_START_X + beatsPerLine * BEAT_WIDTH + 20;
+  const referenceBeatsPerLine = MEASURES_PER_LINE * 4; // always use 4/4 width
+  const scaledBeatWidth = BEAT_WIDTH * (referenceBeatsPerLine / beatsPerLine);
+  const staffWidth = NOTE_START_X + referenceBeatsPerLine * BEAT_WIDTH + 20;
+  const noteX = (beatPosition) => getNoteX(beatPosition, scaledBeatWidth);
   const nextNoteBeatValue = getDurationBeatValue(duration, dotted, triplet);
 
   const rawCurrentLine = Math.floor(totalBeats / beatsPerLine);
@@ -537,7 +540,7 @@ export default function App() {
                 {/* Bar lines + repeat signs */}
                 {Array.from({ length: MEASURES_PER_LINE }).map((_, measureIdx) => {
                   const globalMeasure = lineIdx * MEASURES_PER_LINE + measureIdx + 1;
-                  const barX = NOTE_START_X + (measureIdx + 1) * beatsPerMeasure * BEAT_WIDTH;
+                  const barX = NOTE_START_X + (measureIdx + 1) * beatsPerMeasure * scaledBeatWidth;
                   const repeatType = repeats[globalMeasure];
                   const repeatScale = 0.87;
                   const repeatY = STAFF_TOP - 1;
@@ -594,7 +597,7 @@ export default function App() {
                   const playheadLine = Math.floor(playheadBeat / beatsPerLine);
                   if (playheadLine === lineIdx) {
                     const beatOnLine = playheadBeat % beatsPerLine;
-                    const playheadX = getNoteX(beatOnLine);
+                    const playheadX = noteX(beatOnLine);
                     return (
                       <line
                         x1={playheadX} y1={STAFF_TOP - 10}
@@ -610,7 +613,7 @@ export default function App() {
                 {/* Ghost note */}
                 {showGhost && (
                   <NoteHead
-                    x={getNoteX(snapToGrid(beatsOnCurrentLine, duration, triplet))}
+                    x={noteX(snapToGrid(beatsOnCurrentLine, duration, triplet))}
                     y={staffY(ghostNote.pos)}
                     duration={duration} selected={false}
                     dotted={dotted} accidental={accidental}
@@ -635,7 +638,7 @@ export default function App() {
                   });
 
                   const getNoteRenderInfo = (note) => ({
-                    x: getNoteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0),
+                    x: noteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0),
                     y: staffY(note.pos),
                     pos: note.pos
                   });
@@ -653,7 +656,7 @@ export default function App() {
                       <Beams beamGroups={beamGroups} getNoteRenderInfo={getNoteRenderInfo} />
 
                       {lineNotes.map((note) => {
-                        const x = getNoteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
+                        const x = noteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
                         const globalIdx = notes.findIndex(n => n.id === note.id);
 
                         if (note.isRest) {
@@ -711,8 +714,8 @@ export default function App() {
                           const nextNote = lineNotes[i + 1];
                           if (!nextNote || nextNote.isRest) continue;
 
-                          const x1 = getNoteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
-                          const x2 = getNoteX(nextNote.beatPosition) + (sixteenthXAdjust.get(nextNote.id) || 0);
+                          const x1 = noteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
+                          const x2 = noteX(nextNote.beatPosition) + (sixteenthXAdjust.get(nextNote.id) || 0);
                           const y1 = staffY(note.pos);
                           const y2 = staffY(nextNote.pos);
 
@@ -759,8 +762,8 @@ export default function App() {
                             if (groupSize >= 1) {
                               const firstNote = lineNotes[i];
                               const lastNote = lineNotes[groupEnd - 1];
-                              const x1 = getNoteX(firstNote.beatPosition) - 8;
-                              const x2 = getNoteX(lastNote.beatPosition) + 8;
+                              const x1 = noteX(firstNote.beatPosition) - 8;
+                              const x2 = noteX(lastNote.beatPosition) + 8;
                               const bracketY = STAFF_TOP - 18;
                               brackets.push(
                                 <g key={`triplet-${firstNote.id}`}>

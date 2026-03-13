@@ -9,6 +9,6 @@ export function yToPos(y) {
   return Math.max(0, Math.min(16, Math.round(rawPos)));
 }
 
-export function getNoteX(beatPosition) {
-  return NOTE_START_X + beatPosition * BEAT_WIDTH + NOTE_CENTER_OFFSET;
+export function getNoteX(beatPosition, beatWidth = BEAT_WIDTH) {
+  return NOTE_START_X + beatPosition * beatWidth + NOTE_CENTER_OFFSET;
 }
