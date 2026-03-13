@@ -52,6 +52,7 @@
     "deleteSelected": "Borrar nota seleccionada"
   },
   "shortcuts": {
+    "notation": "Notación",
     "title": "Atajos de teclado",
     "notes": "NOTAS (G3 → B5):",
     "whole": "Redonda",

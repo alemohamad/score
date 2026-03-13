@@ -52,6 +52,7 @@
     "deleteSelected": "Delete selected note"
   },
   "shortcuts": {
+    "notation": "Notation",
     "title": "Keyboard shortcuts",
     "notes": "NOTES (G3 → B5):",
     "whole": "Whole",

@@ -68,7 +68,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
   const restLabel = t("controls.rest");
 
   const SHORTCUTS = [
-    { label: t("noteSystem.solfeo") + " / " + t("noteSystem.letter"), key: "0" },
+    { label: t("shortcuts.notation"), key: "0" },
     { label: t("shortcuts.sharp"), key: "V" },
     { label: t("shortcuts.timeSignature"), key: "/" },
     { label: t("shortcuts.sixteenth"), key: "1" },
@@ -259,7 +259,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         </button>
 
         <button
-          className="menu-bar__btn"
+          className={`menu-bar__btn ${isPlaying ? "menu-bar__btn--playing" : ""}`}
           title={isPlaying ? t("playback.stop") : t("playback.play")}
           aria-label={isPlaying ? t("playback.stop") : t("playback.play")}
           disabled={!hasNotes && !isPlaying}
