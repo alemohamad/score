@@ -553,14 +553,14 @@ export default function App() {
                         stroke="#1a1a2e" strokeWidth={measureIdx === MEASURES_PER_LINE - 1 ? "2.5" : "1.5"}
                       />
                       {(repeatType === 'end' || repeatType === 'both') && (
-                        <g transform={`translate(${barX - REPEAT_PATHS.end.width * repeatScale - 2}, ${repeatY}) scale(${repeatScale})`}>
+                        <g transform={`translate(${barX - REPEAT_PATHS.end.width * repeatScale - 2 + 4}, ${repeatY}) scale(${repeatScale})`}>
                           {REPEAT_PATHS.end.paths.map((p, i) => (
                             <path key={i} d={p} fill="#1a1a2e" />
                           ))}
                         </g>
                       )}
                       {(repeatType === 'start' || repeatType === 'both') && (
-                        <g transform={`translate(${barX + 3}, ${repeatY}) scale(${repeatScale})`}>
+                        <g transform={`translate(${barX + 3 - 4}, ${repeatY}) scale(${repeatScale})`}>
                           {REPEAT_PATHS.start.paths.map((p, i) => (
                             <path key={i} d={p} fill="#1a1a2e" />
                           ))}

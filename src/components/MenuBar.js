@@ -294,7 +294,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
 
         <div className="menu-bar__separator" />
 
-        <div className="menu-bar__btn menu-bar__count" aria-label={`${noteCount} ${noteCount !== 1 ? t("status.notes") : t("status.note")}`}>
+        <div className="menu-bar__btn menu-bar__count" title={`${t("status.scoreHas")} ${noteCount} ${noteCount !== 1 ? t("status.notes") : t("status.note")}`} aria-label={`${noteCount} ${noteCount !== 1 ? t("status.notes") : t("status.note")}`}>
           {noteCount}
         </div>
 
