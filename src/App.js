@@ -38,7 +38,7 @@ export default function App() {
   const [ghostNote,   setGhostNote]   = useState(null);
   const [timeSignature, setTimeSignature] = useState(TIME_SIGNATURES[0]);
   const [repeats, setRepeats] = useState({});
-  const [hideLabels,  setHideLabels]  = useState(false);
+  const [hideLabels,  setHideLabels]  = useState(true);
   const [showShortcuts, setShowShortcuts] = useState(false);
 
   const containerRef = useRef(null);
@@ -170,6 +170,37 @@ export default function App() {
     setSelectedIdx(null);
   }, [duration, dotted, triplet]);
 
+  // ── Recalculate startBeats after editing a note ────────────────────────────
+  const recalcStartBeats = useCallback((notesList) => {
+    let beat = 0;
+    return notesList.map(n => {
+      const snapped = snapToGrid(beat, n.duration, n.triplet);
+      const updated = { ...n, startBeat: snapped };
+      beat = snapped + getNoteBeatValue(updated);
+      return updated;
+    });
+  }, []);
+
+  // ── Update selected note property ──────────────────────────────────────────
+  const updateSelectedNote = useCallback((prop, value) => {
+    if (selectedIdx === null) return false;
+    setNotes(ns => {
+      if (selectedIdx >= ns.length) return ns;
+      const note = ns[selectedIdx];
+      if (note.isRest && (prop === "accidental" || prop === "pos")) return ns;
+      const updated = [...ns];
+      if (prop === "pos") {
+        const noteData = STAFF_NOTES[value];
+        if (!noteData) return ns;
+        updated[selectedIdx] = { ...note, pos: value, note: noteData.note, octave: noteData.octave };
+      } else {
+        updated[selectedIdx] = { ...note, [prop]: value };
+      }
+      return recalcStartBeats(updated);
+    });
+    return true;
+  }, [selectedIdx, recalcStartBeats]);
+
   // ── Keyboard handler ────────────────────────────────────────────────────────
   const handleKeyDown = useCallback((e) => {
     const key = e.key.toLowerCase();
@@ -179,12 +210,46 @@ export default function App() {
     if (e.shiftKey && key === "o") { e.preventDefault(); openScore(); return; }
     if (e.shiftKey && key === "backspace") { e.preventDefault(); setNotes([]); setSelectedIdx(null); return; }
 
-    if (DURATION_KEYS[e.key]) { setDuration(DURATION_KEYS[e.key].value); return; }
-    if (key === ".")           { setDotted(d => !d); return; }
-    if (key === "[")           { setTriplet(t => !t); return; }
-    if (key === "v")           { setAccidental(a => a === "sharp"   ? null : "sharp");   return; }
-    if (key === "b")           { setAccidental(a => a === "flat"    ? null : "flat");    return; }
-    if (key === "n")           { setAccidental(a => a === "natural" ? null : "natural"); return; }
+    if (DURATION_KEYS[e.key]) {
+      const newDur = DURATION_KEYS[e.key].value;
+      if (selectedIdx !== null) updateSelectedNote("duration", newDur);
+      setDuration(newDur);
+      return;
+    }
+    if (key === ".") {
+      if (selectedIdx !== null) {
+        const note = notes[selectedIdx];
+        updateSelectedNote("dotted", !note.dotted);
+      }
+      setDotted(d => !d);
+      return;
+    }
+    if (key === "[") {
+      if (selectedIdx !== null) {
+        const note = notes[selectedIdx];
+        updateSelectedNote("triplet", !note.triplet);
+      }
+      setTriplet(t => !t);
+      return;
+    }
+    if (key === "v") {
+      const toggle = a => a === "sharp" ? null : "sharp";
+      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
+      setAccidental(toggle);
+      return;
+    }
+    if (key === "b") {
+      const toggle = a => a === "flat" ? null : "flat";
+      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
+      setAccidental(toggle);
+      return;
+    }
+    if (key === "n") {
+      const toggle = a => a === "natural" ? null : "natural";
+      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
+      setAccidental(toggle);
+      return;
+    }
 
     if (key === "0") {
       setNoteSystem(ns => ns === "solfeo" ? "letter" : "solfeo");
@@ -194,7 +259,7 @@ export default function App() {
     if (key === "/") {
       e.preventDefault();
       setTimeSignature(ts => {
-        const idx = TIME_SIGNATURES.findIndex(t => t.label === ts.label);
+        const idx = TIME_SIGNATURES.findIndex(sig => sig.label === ts.label);
         const newIdx = idx >= TIME_SIGNATURES.length - 1 ? 0 : idx + 1;
         return TIME_SIGNATURES[newIdx];
       });
@@ -230,7 +295,7 @@ export default function App() {
 
     const noteData = KEY_TO_NOTE[key];
     if (noteData) addNote(noteData);
-  }, [selectedIdx, addNote, addRest, isPlaying, startPlayback, stopPlayback, saveScore, openScore]);
+  }, [selectedIdx, notes, addNote, addRest, updateSelectedNote, isPlaying, startPlayback, stopPlayback, saveScore, openScore]);
 
   // ── Pointer helpers ─────────────────────────────────────────────────────────
   function getSVGCoords(e, svgEl) {
@@ -309,6 +374,49 @@ export default function App() {
     setSelectedIdx(null);
   }, [selectedIdx]);
 
+  // ── Drag state ─────────────────────────────────────────────────────────────
+  const draggingRef = useRef(null);
+
+  function handleNoteDragStart(e, globalIdx, lineIdx) {
+    e.stopPropagation();
+    const note = notes[globalIdx];
+    if (note.isRest) return;
+    draggingRef.current = { globalIdx, lineIdx, startY: e.clientY || (e.touches && e.touches[0].clientY), moved: false };
+    setSelectedIdx(globalIdx);
+  }
+
+  function handleNoteDragMove(e, lineIdx) {
+    if (!draggingRef.current || draggingRef.current.lineIdx !== lineIdx) return;
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    if (Math.abs(clientY - draggingRef.current.startY) > 4) {
+      draggingRef.current.moved = true;
+    }
+    if (!draggingRef.current.moved) return;
+
+    const svgEl = svgRefs.current[lineIdx];
+    if (!svgEl) return;
+    const { y } = getSVGCoords(e, svgEl);
+    const pos = yToPos(y);
+    const noteData = STAFF_NOTES[pos];
+    if (noteData) {
+      const idx = draggingRef.current.globalIdx;
+      setNotes(ns => {
+        if (ns[idx].pos === pos) return ns;
+        const updated = [...ns];
+        updated[idx] = { ...ns[idx], pos, note: noteData.note, octave: noteData.octave };
+        return updated;
+      });
+    }
+  }
+
+  function handleNoteDragEnd(e) {
+    if (draggingRef.current && draggingRef.current.moved) {
+      const note = notes[draggingRef.current.globalIdx];
+      if (note) playNote(note.note, note.octave, note.accidental);
+    }
+    draggingRef.current = null;
+  }
+
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <div
@@ -318,7 +426,7 @@ export default function App() {
       className="app"
     >
       {/* Menu bar */}
-      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} setSelectedIdx={setSelectedIdx} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
+      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} selectedIdx={selectedIdx} setSelectedIdx={setSelectedIdx} updateSelectedNote={updateSelectedNote} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
 
       {/* Staff */}
       <div className="staff-container-wrapper">
@@ -335,11 +443,12 @@ export default function App() {
               width={staffWidth}
               height={LINE_GAP * 4 + 130}
               style={{ display:"block", cursor: isCurrentLine ? "crosshair" : "default" }}
-              onMouseMove={e => handleStaffPointerMove(e, lineIdx)}
-              onMouseLeave={() => setGhostNote(null)}
-              onClick={e => handleStaffClick(e, lineIdx)}
+              onMouseMove={e => { handleNoteDragMove(e, lineIdx); handleStaffPointerMove(e, lineIdx); }}
+              onMouseUp={e => handleNoteDragEnd(e)}
+              onMouseLeave={() => { handleNoteDragEnd(); setGhostNote(null); }}
+              onClick={e => { if (!draggingRef.current?.moved) handleStaffClick(e, lineIdx); }}
               onTouchStart={e => { e.preventDefault(); handleStaffClick(e, lineIdx); }}
-              onTouchMove={e => { e.preventDefault(); handleStaffPointerMove(e, lineIdx); }}
+              onTouchMove={e => { e.preventDefault(); handleNoteDragMove(e, lineIdx); handleStaffPointerMove(e, lineIdx); }}
             >
               <g transform="translate(0,18)">
                 {/* Staff lines */}
@@ -361,15 +470,15 @@ export default function App() {
                 {/* Time signature (first line only) */}
                 {lineIdx === 0 && (
                   <g>
-                    <text x={STAFF_LEFT + 65} y={STAFF_TOP + LINE_GAP * 1.7 - 2}
-                      fontSize={36} fontFamily="Georgia, serif" fontWeight="bold" fill="#1a1a2e"
+                    <text x={STAFF_LEFT + 65} y={STAFF_TOP + LINE_GAP * 1}
+                      fontSize={60} fontFamily="'Bravura Text', Georgia, serif" fontWeight={400} fill="#1a1a2e"
                       textAnchor="middle">
-                      {timeSignature.beats}
+                      {String.fromCharCode(0xE080 + timeSignature.beats)}
                     </text>
-                    <text x={STAFF_LEFT + 65} y={STAFF_TOP + LINE_GAP * 3.7 - 2}
-                      fontSize={36} fontFamily="Georgia, serif" fontWeight="bold" fill="#1a1a2e"
+                    <text x={STAFF_LEFT + 65} y={STAFF_TOP + LINE_GAP * 3}
+                      fontSize={60} fontFamily="'Bravura Text', Georgia, serif" fontWeight={400} fill="#1a1a2e"
                       textAnchor="middle">
-                      {timeSignature.beatValue}
+                      {String.fromCharCode(0xE080 + timeSignature.beatValue)}
                     </text>
                   </g>
                 )}
@@ -546,8 +655,13 @@ export default function App() {
 
                         return (
                           <g key={note.id}
-                            onClick={ev => { ev.stopPropagation(); setSelectedIdx(globalIdx === selectedIdx ? null : globalIdx); }}
-                            onTouchEnd={ev => { ev.preventDefault(); ev.stopPropagation(); setSelectedIdx(globalIdx === selectedIdx ? null : globalIdx); }}
+                            onMouseDown={ev => { handleNoteDragStart(ev, globalIdx, lineIdx); }}
+                            onMouseMove={ev => { handleNoteDragMove(ev, lineIdx); }}
+                            onMouseUp={ev => { if (!draggingRef.current?.moved) { ev.stopPropagation(); setSelectedIdx(globalIdx === selectedIdx ? null : globalIdx); } handleNoteDragEnd(ev); }}
+                            onMouseLeave={ev => { handleNoteDragEnd(ev); }}
+                            onTouchStart={ev => { ev.preventDefault(); handleNoteDragStart(ev, globalIdx, lineIdx); }}
+                            onTouchMove={ev => { ev.preventDefault(); handleNoteDragMove(ev, lineIdx); }}
+                            onTouchEnd={ev => { ev.preventDefault(); ev.stopPropagation(); if (!draggingRef.current?.moved) { setSelectedIdx(globalIdx === selectedIdx ? null : globalIdx); } handleNoteDragEnd(ev); }}
                             style={{ cursor:"pointer" }}>
                             <rect x={x-16} y={y-26} width={32} height={52} fill="transparent"/>
                             <NoteHead x={x} y={y} duration={note.duration}

@@ -10,14 +10,14 @@ export function noteName(note, system, accidental) {
 
 export function getNoteBeatValue(note) {
   let value = BEAT_VALUES[note.duration] || 1;
-  if (note.dotted) value *= 1.5;
-  if (note.triplet) value *= 2 / 3;
+  if (note.dotted) value *= 1.4;
+  if (note.triplet) value *= 0.6;
   return value;
 }
 
 export function getDurationBeatValue(duration, dotted, triplet) {
   let value = BEAT_VALUES[duration] || 1;
-  if (dotted) value *= 1.5;
+  if (dotted) value *= 1.4;
   if (triplet) value *= 2 / 3;
   return value;
 }
@@ -42,7 +42,7 @@ export function getBeatGridSize(duration, triplet = false) {
     default: gridSize = 1;
   }
   if (triplet) {
-    gridSize = gridSize * (2 / 3);
+    gridSize = gridSize * 0.6;
   }
   return gridSize;
 }

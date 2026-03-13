@@ -60,7 +60,7 @@ const UPLOAD_PATHS = [
   "M46,65 C48.6521649,65 51.195704,63.9464341 53.0710678,62.0710703 C54.9464316,60.1957065 56.0000611,57.6521674 56.0000611,55 L56.0000611,19.6600025 C56.0083238,17.5363188 55.165548,15.4978098 53.66,14 L43,3.34000248 C41.4984232,1.84009391 39.4623704,0.998333557 37.34,1 L10,1 C4.4771525,1 2.27373675e-13,5.47715498 2.27373675e-13,11 L2.27373675e-13,55 C2.27373675e-13,57.6521674 1.0535684,60.1957065 2.92893219,62.0710703 C4.80429597,63.9464341 7.3478351,65 10,65 L46,65 Z M8,55.0000025 L8,11.0000025 C8,9.89543298 8.8954305,9.00000248 10,9.00000248 L37.34,9.00000248 L48,19.6600025 L48,55.0000025 C48,56.104572 47.1045695,57.0000025 46,57.0000025 L10,57.0000025 C8.8954305,57.0000025 8,56.104572 8,55.0000025 Z",
 ];
 
-export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, setSelectedIdx, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
+export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, selectedIdx, setSelectedIdx, updateSelectedNote, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
   const { t } = useTranslation();
 
   const dottedLabel = t("status.dotted");
@@ -119,7 +119,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           aria-label={`${t("menubar.timeSignature")} ${timeSignature.label}`}
           onClick={() => {
             setTimeSignature(ts => {
-              const idx = TIME_SIGNATURES.findIndex(t => t.label === ts.label);
+              const idx = TIME_SIGNATURES.findIndex(sig => sig.label === ts.label);
               const newIdx = idx >= TIME_SIGNATURES.length - 1 ? 0 : idx + 1;
               return TIME_SIGNATURES[newIdx];
             });
@@ -139,7 +139,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
               className={`menu-bar__btn ${duration === d.value ? "menu-bar__btn--active" : ""}`}
               title={label}
               aria-label={label}
-              onClick={() => { setDuration(d.value); onAfterChange?.(); }}
+              onClick={() => { if (selectedIdx !== null) updateSelectedNote("duration", d.value); setDuration(d.value); onAfterChange?.(); }}
             >
               <svg viewBox={d.viewBox} width="24" height="24" aria-hidden="true">
                 <path d={NOTE_PATHS[d.pathKey].path} fill={duration === d.value ? "#1767AE" : "#A2A49F"} />
@@ -154,7 +154,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           className={`menu-bar__btn ${dotted ? "menu-bar__btn--active" : ""}`}
           title={dottedLabel}
           aria-label={dottedLabel}
-          onClick={() => { setDotted(d => !d); onAfterChange?.(); }}
+          onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("dotted", !note.dotted); } setDotted(d => !d); onAfterChange?.(); }}
         >
           <svg viewBox="0 0 36 84" width="24" height="24" aria-hidden="true">
             <path d={NOTE_PATHS.quarterUp.path} fill={dotted ? "#1767AE" : "#A2A49F"} />
@@ -185,7 +185,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
               className={`menu-bar__btn ${isActive ? "menu-bar__btn--active" : ""}`}
               title={label}
               aria-label={label}
-              onClick={() => { setAccidental(prev => prev === a.value ? null : a.value); onAfterChange?.(); }}
+              onClick={() => { const newVal = accidental === a.value ? null : a.value; if (selectedIdx !== null) updateSelectedNote("accidental", newVal); setAccidental(newVal); onAfterChange?.(); }}
             >
               <svg viewBox={`0 0 ${acc.width} ${acc.height}`} width={Math.round(acc.width / acc.height * a.iconHeight)} height={a.iconHeight} aria-hidden="true">
                 <g transform={`translate(${acc.translateX}, ${acc.translateY})`}>
@@ -202,7 +202,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           className={`menu-bar__btn ${triplet ? "menu-bar__btn--active" : ""}`}
           title={t("status.triplet")}
           aria-label={t("status.triplet")}
-          onClick={() => { setTriplet(t => !t); onAfterChange?.(); }}
+          onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("triplet", !note.triplet); } setTriplet(t => !t); onAfterChange?.(); }}
         >
           <svg viewBox="0 0 44 50" width="24" height="24" aria-hidden="true">
             {/* 3 beamed eighth notes */}
@@ -233,11 +233,11 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           onClick={() => { setIsMuted(m => !m); onAfterChange?.(); }}
         >
           {isMuted ? (
-            <svg viewBox="0 8 98 82" width="22" height="22" style={{marginLeft: -2}} aria-hidden="true">
+            <svg viewBox="0 8 98 82" width="18" height="18" style={{marginLeft: 0}} aria-hidden="true">
               {SOUND_OFF_PATHS.map((d, i) => <path key={i} d={d} fill="#A2A49F" />)}
             </svg>
           ) : (
-            <svg viewBox="0 11 98 78" width="22" height="22" aria-hidden="true">
+            <svg viewBox="0 11 98 78" width="18" height="18" aria-hidden="true">
               {SOUND_ON_PATHS.map((d, i) => <path key={i} d={d} fill="#1767AE" />)}
             </svg>
           )}
