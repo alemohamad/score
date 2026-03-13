@@ -234,7 +234,7 @@ export default function App() {
     // Shift shortcuts
     if (e.shiftKey && key === "s") { e.preventDefault(); saveScore(); return; }
     if (e.shiftKey && key === "o") { e.preventDefault(); openScore(); return; }
-    if (e.shiftKey && key === "backspace") { e.preventDefault(); setNotes([]); setSelectedIdx(null); return; }
+    if (e.shiftKey && key === "backspace") { e.preventDefault(); setNotes([]); setRepeats({}); setSelectedIdx(null); return; }
 
     if (DURATION_KEYS[e.key]) {
       const newDur = DURATION_KEYS[e.key].value;
