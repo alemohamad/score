@@ -19,10 +19,11 @@ body {
 /* ─── Duration bar ────────────────────────────────────────────────────────── */
 
 .menu-bar {
-  width: 100%;
-  border-top: 2px solid #171618;
-  border-bottom: 2px solid #171618;
-  margin: 24px 0 36px;
+  display: inline-flex;
+  border: 2px solid #171618;
+  border-radius: 8px;
+  margin: 36px 0;
+  padding: 0 4px;
   font-weight: 600;
 }
 
@@ -118,61 +119,13 @@ body {
 }
 
 
-/* ─── Pill group (Toggle, TimeSignature, Language) ─────────────────────── */
-
-.pill-group {
-  display: flex;
-  align-items: center;
-  background: #e8e2ce;
-  border-radius: 20px;
-  padding: 2px;
-  box-shadow: inset 0 1px 3px #0001;
-}
-
-.pill-button {
-  background: transparent;
-  color: #888;
-  border: none;
-  border-radius: 18px;
-  padding: 4px 16px;
-  font-size: 12px;
-  cursor: pointer;
-  font-family: system-ui, -apple-system, sans-serif;
-  transition: all 0.2s;
-  font-weight: 400;
-}
-
-.pill-button--active {
-  background: #1a1a2e;
-  color: #fdf6e3;
-  font-weight: 700;
-}
-
-/* ─── Status bar ──────────────────────────────────────────────────────────── */
-
-.status-bar {
-  display: flex;
-  gap: 10px;
-  margin: 10px 0;
-  background: #ede8d5;
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 11px;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-.status-bar__divider {
-  color: #ccc;
-}
-
 /* ─── Staff container ─────────────────────────────────────────────────────── */
 
 .staff-container-wrapper {
   display: flex;
   justify-content: center;
   overflow: hidden;
+  margin-bottom: 36px;
 }
 
 .staff-container {
@@ -180,219 +133,95 @@ body {
   border-radius: 6px;
   box-shadow: none;
   padding: 36px;
-  margin-bottom: 16px;
   overflow-x: auto;
   touch-action: none;
-  transform: scale(0.76);
-  transform-origin: top center;
+  zoom: 0.76;
 }
 
-/* ─── Playback controls ───────────────────────────────────────────────────── */
-
-.playback-controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-  background: #ede8d5;
-  border-radius: 8px;
-  padding: 8px 12px;
+.staff-container svg + svg {
+  margin-top: 24px;
 }
 
 
-.playback-controls__tempo {
+/* ─── Shortcuts overlay ──────────────────────────────────────────────────── */
+
+.shortcuts-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: 8px;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
 }
 
-.playback-controls__tempo-label {
-  font-size: 11px;
-  color: #666;
+.shortcuts-overlay__content {
+  background: #2a2a2c;
+  border-radius: 12px;
+  padding: 24px 32px;
 }
 
-.playback-controls__tempo-slider {
-  width: 100px;
-  cursor: pointer;
-}
-
-.playback-controls__tempo-value {
-  font-size: 12px;
-  font-weight: bold;
-  min-width: 45px;
-}
-
-/* ─── Controls (duration + modifiers) ─────────────────────────────────────── */
-
-.controls-section {
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 12px;
-}
-
-.controls-row {
+.shortcuts-overlay__header {
   display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.controls-row__label {
-  color: #aaa;
-  font-size: 11px;
-  min-width: 72px;
-}
-
-.control-button {
-  background: #ede8d5;
-  color: #1a1a2e;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 12px;
-  font-family: system-ui, -apple-system, sans-serif;
-  transition: all 0.15s;
-  min-height: 36px;
-}
-
-.control-button--active {
-  background: #1a1a2e;
-  color: #fdf6e3;
-  box-shadow: 0 2px 8px #0002;
-}
-
-.control-button--modifier-active {
-  background: #e63946;
-  color: #fff;
-}
-
-.control-button--rest {
-  background: #2a9d8f;
-  color: #fff;
-  margin-left: 4px;
-  box-shadow: 0 2px 8px #2a9d8f30;
-}
-
-.control-button--delete {
-  background: #e63946;
-  color: #fff;
-  padding: 6px 14px;
-  margin-left: 8px;
-  box-shadow: 0 2px 8px #e6394650;
-  animation: pulse 1s infinite;
-}
-
-.control-button--export {
-  background: #666;
-  color: #fff;
-  font-size: 10px;
-  margin-left: 8px;
-}
-
-.control-button--import {
-  background: #666;
-  color: #fff;
-  font-size: 10px;
-  margin-left: 4px;
-}
-
-/* ─── Keyboard shortcuts ──────────────────────────────────────────────────── */
-
-.keyboard-shortcuts {
-  width: 100%;
-  max-width: 800px;
-  font-size: 11px;
-}
-
-.keyboard-shortcuts__summary {
-  color: #aaa;
-  cursor: pointer;
-  margin-bottom: 6px;
-  font-size: 11px;
-}
-
-.keyboard-shortcuts__content {
-  padding-top: 6px;
-}
-
-.keyboard-shortcuts__label {
-  color: #aaa;
-  margin-bottom: 4px;
-}
-
-.keyboard-shortcuts__row {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-
-.keyboard-shortcuts__key {
-  background: #ede8d5;
-  border: 1px solid #d4cdb0;
-  border-radius: 5px;
-  padding: 3px 6px;
-  cursor: pointer;
-  text-align: center;
-  min-width: 34px;
-  transition: background 0.1s;
-}
-
-.keyboard-shortcuts__key:hover {
-  background: #c8c0a0;
-}
-
-.keyboard-shortcuts__key-letter {
-  font-family: monospace;
+.shortcuts-overlay__title {
+  font-size: 16px;
   font-weight: 700;
-  font-size: 11px;
+  color: #fff;
 }
 
-.keyboard-shortcuts__key-note {
-  font-size: 8px;
-  color: #999;
-  font-family: system-ui, -apple-system, sans-serif;
+.shortcuts-overlay__close {
+  background: none;
+  border: none;
+  color: #A2A49F;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
 }
 
-.keyboard-shortcuts__hint {
-  color: #bbb;
-  margin-top: 6px;
-  font-size: 10px;
+.shortcuts-overlay__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px 64px;
 }
 
-/* ─── Kbd tags ────────────────────────────────────────────────────────────── */
+.shortcuts-overlay__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 
-.kbd {
-  background: #ede8d5;
-  border-radius: 3px;
-  padding: 1px 4px;
+.shortcuts-overlay__label {
+  font-size: 13px;
+  color: #A2A49F;
+  width: 150px;
+}
+
+.shortcuts-overlay__key {
+  background: #3a3a3c;
+  color: #fff;
   font-family: monospace;
-  margin-left: 4px;
-}
-
-.kbd:first-child {
-  margin-left: 0;
-}
-
-.kbd--dark {
-  background: #1a1a2e;
-  color: #fdf6e3;
-}
-
-.kbd--triplet {
-  background: #9b59b6;
-  color: #fff;
-}
-
-.kbd--rest {
-  background: #2a9d8f;
-  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #4a4a4c;
+  min-width: 28px;
+  text-align: center;
 }
 
 /* ─── Animation ───────────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }

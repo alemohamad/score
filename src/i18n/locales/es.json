@@ -30,13 +30,23 @@
     "sound": "Sonido",
     "namesOn": "Nombres On",
     "namesOff": "Nombres Off",
-    "tempo": "Tempo"
+    "tempo": "Tempo",
+    "hideLabels": "Mostrar/Ocultar nombres"
+  },
+  "menubar": {
+    "switchToABC": "Cambiar a A B C",
+    "switchToSolfeo": "Cambiar a Do Re Mi",
+    "timeSignature": "Compás",
+    "save": "Guardar",
+    "open": "Abrir",
+    "switchLangES": "Cambiar a Español",
+    "switchLangEN": "Cambiar a Inglés"
   },
   "controls": {
     "duration": "DURACIÓN:",
     "modifiers": "MODIFICAR:",
     "rest": "Silencio",
-    "restLabel": "silencio",
+    "restLabel": "Silencio",
     "deleteSelected": "Borrar nota seleccionada"
   },
   "shortcuts": {
@@ -54,6 +64,12 @@
     "triplet": "Tresillo",
     "rest": "Silencio",
     "delete": "Borrar",
-    "timeSignature": "Compás"
+    "timeSignature": "Compás",
+    "language": "Idioma",
+    "save": "Guardar",
+    "open": "Abrir",
+    "mute": "Silenciar",
+    "playStop": "Play / Stop",
+    "clearScore": "Borrar partitura"
   }
 }

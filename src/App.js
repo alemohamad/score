@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import i18n from "./i18n";
 import "./App.css";
 
 // Constants
@@ -20,12 +21,6 @@ import usePlayback from "./hooks/usePlayback";
 import NoteHead from "./components/NoteHead";
 import RestHead from "./components/RestHead";
 import Beams, { calculateBeamGroups, getBeamDirection } from "./components/Beams";
-import Toggle from "./components/Toggle";
-import TimeSignatureSelector from "./components/TimeSignatureSelector";
-import LanguageSwitcher from "./components/LanguageSwitcher";
-import PlaybackControls from "./components/PlaybackControls";
-import Controls from "./components/Controls";
-import KeyboardShortcuts from "./components/KeyboardShortcuts";
 import MenuBar from "./components/MenuBar";
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
@@ -44,6 +39,7 @@ export default function App() {
   const [timeSignature, setTimeSignature] = useState(TIME_SIGNATURES[0]);
   const [repeats, setRepeats] = useState({});
   const [hideLabels,  setHideLabels]  = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   const containerRef = useRef(null);
   const svgRefs      = useRef([]);
@@ -58,6 +54,41 @@ export default function App() {
 
 
   const focusContainer = useCallback(() => containerRef.current?.focus(), []);
+
+  const saveScore = useCallback(() => {
+    if (notes.length === 0) return;
+    const blob = new Blob([JSON.stringify(notes, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "score.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [notes]);
+
+  const openScore = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      file.text().then(text => {
+        try {
+          const imported = JSON.parse(text);
+          if (Array.isArray(imported)) {
+            setNotes(imported);
+            setSelectedIdx(null);
+          } else {
+            alert("Invalid format: expected an array of notes.");
+          }
+        } catch {
+          alert("Could not parse file as JSON.");
+        }
+      });
+    };
+    input.click();
+  }, []);
 
   // ── Add a note ──────────────────────────────────────────────────────────────
   const addNote = useCallback((noteData) => {
@@ -143,10 +174,15 @@ export default function App() {
   const handleKeyDown = useCallback((e) => {
     const key = e.key.toLowerCase();
 
+    // Shift shortcuts
+    if (e.shiftKey && key === "s") { e.preventDefault(); saveScore(); return; }
+    if (e.shiftKey && key === "o") { e.preventDefault(); openScore(); return; }
+    if (e.shiftKey && key === "backspace") { e.preventDefault(); setNotes([]); setSelectedIdx(null); return; }
+
     if (DURATION_KEYS[e.key]) { setDuration(DURATION_KEYS[e.key].value); return; }
     if (key === ".")           { setDotted(d => !d); return; }
-    if (key === "t")           { setTriplet(t => !t); return; }
-    if (e.shiftKey && e.key === "#") { setAccidental(a => a === "sharp"   ? null : "sharp");   return; }
+    if (key === "[")           { setTriplet(t => !t); return; }
+    if (key === "v")           { setAccidental(a => a === "sharp"   ? null : "sharp");   return; }
     if (key === "b")           { setAccidental(a => a === "flat"    ? null : "flat");    return; }
     if (key === "n")           { setAccidental(a => a === "natural" ? null : "natural"); return; }
 
@@ -155,15 +191,8 @@ export default function App() {
       return;
     }
 
-    if (key === "-") {
-      setTimeSignature(ts => {
-        const idx = TIME_SIGNATURES.findIndex(t => t.label === ts.label);
-        const newIdx = idx <= 0 ? TIME_SIGNATURES.length - 1 : idx - 1;
-        return TIME_SIGNATURES[newIdx];
-      });
-      return;
-    }
-    if (key === "+" || (e.shiftKey && e.key === "=")) {
+    if (key === "/") {
+      e.preventDefault();
       setTimeSignature(ts => {
         const idx = TIME_SIGNATURES.findIndex(t => t.label === ts.label);
         const newIdx = idx >= TIME_SIGNATURES.length - 1 ? 0 : idx + 1;
@@ -171,6 +200,14 @@ export default function App() {
       });
       return;
     }
+
+    if (key === "p") {
+      if (isPlaying) stopPlayback(); else startPlayback();
+      return;
+    }
+    if (key === "m") { setIsMuted(m => !m); return; }
+    if (key === "k") { setShowShortcuts(s => !s); return; }
+    if (key === "l") { i18n.changeLanguage(i18n.language === "es" ? "en" : "es"); return; }
 
     if (key === "backspace" || key === "delete") {
       e.preventDefault();
@@ -183,7 +220,7 @@ export default function App() {
       return;
     }
 
-    if (key === "escape") { setSelectedIdx(null); return; }
+    if (key === "escape") { setSelectedIdx(null); setShowShortcuts(false); return; }
 
     if (key === " ") {
       e.preventDefault();
@@ -193,7 +230,7 @@ export default function App() {
 
     const noteData = KEY_TO_NOTE[key];
     if (noteData) addNote(noteData);
-  }, [selectedIdx, addNote, addRest]);
+  }, [selectedIdx, addNote, addRest, isPlaying, startPlayback, stopPlayback, saveScore, openScore]);
 
   // ── Pointer helpers ─────────────────────────────────────────────────────────
   function getSVGCoords(e, svgEl) {
@@ -281,7 +318,7 @@ export default function App() {
       className="app"
     >
       {/* Menu bar */}
-      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} setSelectedIdx={setSelectedIdx} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} onAfterChange={focusContainer} />
+      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} setSelectedIdx={setSelectedIdx} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
 
       {/* Staff */}
       <div className="staff-container-wrapper">
@@ -574,8 +611,6 @@ export default function App() {
       </div>
       </div>
 
-      {/* Keyboard shortcuts */}
-      <KeyboardShortcuts noteSystem={noteSystem} addNote={addNote} onAfterChange={focusContainer} />
     </div>
   );
 }

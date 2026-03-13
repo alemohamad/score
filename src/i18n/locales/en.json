@@ -30,13 +30,23 @@
     "sound": "Sound",
     "namesOn": "Names On",
     "namesOff": "Names Off",
-    "tempo": "Tempo"
+    "tempo": "Tempo",
+    "hideLabels": "Show/Hide note names"
+  },
+  "menubar": {
+    "switchToABC": "Switch to A B C",
+    "switchToSolfeo": "Switch to Do Re Mi",
+    "timeSignature": "Time signature",
+    "save": "Save",
+    "open": "Open",
+    "switchLangES": "Switch to Spanish",
+    "switchLangEN": "Switch to English"
   },
   "controls": {
     "duration": "DURATION:",
     "modifiers": "MODIFIERS:",
     "rest": "Rest",
-    "restLabel": "rest",
+    "restLabel": "Rest",
     "deleteSelected": "Delete selected note"
   },
   "shortcuts": {
@@ -54,6 +64,12 @@
     "triplet": "Triplet",
     "rest": "Rest",
     "delete": "Delete",
-    "timeSignature": "Time Sig."
+    "timeSignature": "Time Sig.",
+    "language": "Language",
+    "save": "Save",
+    "open": "Open",
+    "mute": "Mute",
+    "playStop": "Play / Stop",
+    "clearScore": "Clear score"
   }
 }

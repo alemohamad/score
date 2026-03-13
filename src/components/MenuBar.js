@@ -3,6 +3,19 @@ import i18n from "../i18n";
 import { NOTE_PATHS, REST_PATHS, ACCIDENTAL_PATHS } from "../constants/svgPaths";
 import { TIME_SIGNATURES } from "../constants/music";
 
+const KEYBOARD_ICON_PATHS = [
+  "M113.5332,34.25 C112.55295,34.25 111.74609,35.056852 111.74609,36.037109 L111.74609,41.990234 C111.74609,42.970492 112.55295,43.775391 113.5332,43.775391 L120.54297,43.775391 C121.52323,43.775391 122.33008,42.970492 122.33008,41.990234 L122.33008,36.037109 C122.33008,35.056852 121.52323,34.25 120.54297,34.25 L113.5332,34.25 Z M113.5332,35.308594 L120.54297,35.308594 C120.95523,35.308594 121.27148,35.624866 121.27148,36.037109 L121.27148,41.990234 C121.27148,42.402478 120.95523,42.716797 120.54297,42.716797 L113.5332,42.716797 C113.12096,42.716797 112.80469,42.402478 112.80469,41.990234 L112.80469,36.037109 C112.80469,35.624866 113.12096,35.308594 113.5332,35.308594 Z",
+  "M113.86274,36.36742 L114.39192,36.36742 C114.53848,36.36742 114.65647,36.485411 114.65647,36.631973 L114.65647,37.161145 C114.65647,37.307707 114.53848,37.425698 114.39192,37.425698 L113.86274,37.425698 C113.71618,37.425698 113.59819,37.307707 113.59819,37.161145 L113.59819,36.631973 C113.59819,36.485411 113.71618,36.36742 113.86274,36.36742 Z",
+  "M115.80302,36.36742 L116.33219,36.36742 C116.47875,36.36742 116.59675,36.485411 116.59675,36.631973 L116.59675,37.161145 C116.59675,37.307707 116.47875,37.425698 116.33219,37.425698 L115.80302,37.425698 C115.65646,37.425698 115.53847,37.307707 115.53847,37.161145 L115.53847,36.631973 C115.53847,36.485411 115.65646,36.36742 115.80302,36.36742 Z",
+  "M117.74329,36.36742 L118.27246,36.36742 C118.41902,36.36742 118.53701,36.485411 118.53701,36.631973 L118.53701,37.161145 C118.53701,37.307707 118.41902,37.425698 118.27246,37.425698 L117.74329,37.425698 C117.59673,37.425698 117.47874,37.307707 117.47874,37.161145 L117.47874,36.631973 C117.47874,36.485411 117.59673,36.36742 117.74329,36.36742 Z",
+  "M119.68357,36.36742 L120.21275,36.36742 C120.35931,36.36742 120.4773,36.485411 120.4773,36.631973 L120.4773,37.161145 C120.4773,37.307707 120.35931,37.425698 120.21275,37.425698 L119.68357,37.425698 C119.53701,37.425698 119.41902,37.307707 119.41902,37.161145 L119.41902,36.631973 C119.41902,36.485411 119.53701,36.36742 119.68357,36.36742 Z",
+  "M113.86274,38.484074 L114.39192,38.484074 C114.53848,38.484074 114.65647,38.602064 114.65647,38.748627 L114.65647,39.277798 C114.65647,39.424361 114.53848,39.542351 114.39192,39.542351 L113.86274,39.542351 C113.71618,39.542351 113.59819,39.424361 113.59819,39.277798 L113.59819,38.748627 C113.59819,38.602064 113.71618,38.484074 113.86274,38.484074 Z",
+  "M115.80314,38.483578 L116.33231,38.483578 C116.47888,38.483578 116.59687,38.601568 116.59687,38.748131 L116.59687,39.277302 C116.59687,39.423865 116.47888,39.541856 116.33231,39.541856 L115.80314,39.541856 C115.65658,39.541856 115.53859,39.423865 115.53859,39.277302 L115.53859,38.748131 C115.53859,38.601568 115.65658,38.483578 115.80314,38.483578 Z",
+  "M117.74357,38.483578 L118.27274,38.483578 C118.41931,38.483578 118.5373,38.601568 118.5373,38.748131 L118.5373,39.277302 C118.5373,39.423865 118.41931,39.541856 118.27274,39.541856 L117.74357,39.541856 C117.59701,39.541856 117.47902,39.423865 117.47902,39.277302 L117.47902,38.748131 C117.47902,38.601568 117.59701,38.483578 117.74357,38.483578 Z",
+  "M119.68397,38.483578 L120.21314,38.483578 C120.35971,38.483578 120.4777,38.601568 120.4777,38.748131 L120.4777,39.277302 C120.4777,39.423865 120.35971,39.541856 120.21314,39.541856 L119.68397,39.541856 C119.53741,39.541856 119.41942,39.423865 119.41942,39.277302 L119.41942,38.748131 C119.41942,38.601568 119.53741,38.483578 119.68397,38.483578 Z",
+  "M115.71484,40.599609 C115.574452,40.5995758 115.439805,40.6553305 115.340536,40.7546003 C115.241268,40.8538701 115.18555,40.9885182 115.18555,41.128906 C115.18555,41.2692938 115.241268,41.4039419 115.340536,41.5032117 C115.439805,41.6024815 115.574452,41.6582362 115.71484,41.658203 L118.36133,41.658203 C118.50172,41.6582388 118.636369,41.6024853 118.73564,41.5032152 C118.834911,41.4039451 118.89063,41.2692955 118.89063,41.128906 C118.89063,40.9885165 118.834911,40.8538669 118.73564,40.7545968 C118.636369,40.6553267 118.50172,40.5995732 118.36133,40.599609 L115.71484,40.599609 Z",
+];
+
 const DURATIONS = [
   { value: "sixteenth", pathKey: "sixteenthUp", viewBox: "0 0 55 84" },
   { value: "eighth",    pathKey: "eighthUp",     viewBox: "0 0 54 84" },
@@ -20,9 +33,9 @@ const REST_VIEWBOXES = {
 };
 
 const ACCIDENTALS = [
+  { value: "sharp",   labelKey: "status.sharp",   iconHeight: 12 },
   { value: "flat",    labelKey: "status.flat",    iconHeight: 18 },
   { value: "natural", labelKey: "status.natural", iconHeight: 17 },
-  { value: "sharp",   labelKey: "status.sharp",   iconHeight: 12 },
 ];
 
 const SOUND_ON_PATHS = [
@@ -47,22 +60,42 @@ const UPLOAD_PATHS = [
   "M46,65 C48.6521649,65 51.195704,63.9464341 53.0710678,62.0710703 C54.9464316,60.1957065 56.0000611,57.6521674 56.0000611,55 L56.0000611,19.6600025 C56.0083238,17.5363188 55.165548,15.4978098 53.66,14 L43,3.34000248 C41.4984232,1.84009391 39.4623704,0.998333557 37.34,1 L10,1 C4.4771525,1 2.27373675e-13,5.47715498 2.27373675e-13,11 L2.27373675e-13,55 C2.27373675e-13,57.6521674 1.0535684,60.1957065 2.92893219,62.0710703 C4.80429597,63.9464341 7.3478351,65 10,65 L46,65 Z M8,55.0000025 L8,11.0000025 C8,9.89543298 8.8954305,9.00000248 10,9.00000248 L37.34,9.00000248 L48,19.6600025 L48,55.0000025 C48,56.104572 47.1045695,57.0000025 46,57.0000025 L10,57.0000025 C8.8954305,57.0000025 8,56.104572 8,55.0000025 Z",
 ];
 
-export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, setSelectedIdx, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, onAfterChange }) {
+export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, setSelectedIdx, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
   const { t } = useTranslation();
 
   const dottedLabel = t("status.dotted");
   const restLabel = t("controls.rest");
 
+  const SHORTCUTS = [
+    { label: t("noteSystem.solfeo") + " / " + t("noteSystem.letter"), key: "0" },
+    { label: t("shortcuts.sharp"), key: "V" },
+    { label: t("shortcuts.timeSignature"), key: "/" },
+    { label: t("shortcuts.sixteenth"), key: "1" },
+    { label: t("shortcuts.flat"), key: "B" },
+    { label: t("shortcuts.language"), key: "L" },
+    { label: t("shortcuts.eighth"), key: "2" },
+    { label: t("shortcuts.natural"), key: "N" },
+    { label: t("shortcuts.save"), key: "⇧S" },
+    { label: t("shortcuts.quarter"), key: "3" },
+    { label: t("shortcuts.triplet"), key: "[" },
+    { label: t("shortcuts.open"), key: "⇧O" },
+    { label: t("shortcuts.half"), key: "4" },
+    { label: t("shortcuts.mute"), key: "M" },
+    { label: t("shortcuts.title"), key: "K" },
+    { label: t("shortcuts.whole"), key: "5" },
+    { label: t("shortcuts.playStop"), key: "P" },
+    { label: t("shortcuts.clearScore"), key: "⇧⌫" },
+    { label: t("shortcuts.delete"), key: "⌫" },
+  ];
+
   return (
     <div className="menu-bar">
       <div className="menu-bar__content">
-        <div className="menu-bar__separator" />
-
         <button
           className="menu-bar__btn"
           style={{ width: 72, height: 36, fontSize: 11, color: "#A2A49F", fontWeight: 600 }}
-          title={noteSystem === "solfeo" ? "Switch to A B C" : "Switch to Do Re Mi"}
-          aria-label={noteSystem === "solfeo" ? "Switch to A B C" : "Switch to Do Re Mi"}
+          title={noteSystem === "solfeo" ? t("menubar.switchToABC") : t("menubar.switchToSolfeo")}
+          aria-label={noteSystem === "solfeo" ? t("menubar.switchToABC") : t("menubar.switchToSolfeo")}
           onClick={() => { setNoteSystem(ns => ns === "solfeo" ? "letter" : "solfeo"); onAfterChange?.(); }}
         >
           {noteSystem === "solfeo" ? "Do Re Mi" : "A B C"}
@@ -82,8 +115,8 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         <button
           className="menu-bar__btn"
           style={{ width: 36, height: 36, fontSize: 11, color: "#A2A49F", fontWeight: 600 }}
-          title="Time signature"
-          aria-label={`Time signature ${timeSignature.label}`}
+          title={t("menubar.timeSignature")}
+          aria-label={`${t("menubar.timeSignature")} ${timeSignature.label}`}
           onClick={() => {
             setTimeSignature(ts => {
               const idx = TIME_SIGNATURES.findIndex(t => t.label === ts.label);
@@ -255,21 +288,11 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
 
         <button
           className="menu-bar__btn"
-          title="Save"
-          aria-label="Save"
+          title={t("menubar.save")}
+          aria-label={t("menubar.save")}
           disabled={!hasNotes}
           style={!hasNotes ? { opacity: 0.3, cursor: "default" } : undefined}
-          onClick={() => {
-            if (!hasNotes) return;
-            const exportData = JSON.stringify(notes, null, 2);
-            const blob = new Blob([exportData], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "score.json";
-            a.click();
-            URL.revokeObjectURL(url);
-          }}
+          onClick={() => { saveScore(); }}
         >
           <svg viewBox="-2 0 60 66" width="18" height="18" aria-hidden="true">
             {SAVE_PATHS.map((d, i) => <path key={i} d={d} fill="#A2A49F" />)}
@@ -278,31 +301,9 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
 
         <button
           className="menu-bar__btn"
-          title="Upload"
-          aria-label="Upload"
-          onClick={() => {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = ".json";
-            input.onchange = (e) => {
-              const file = e.target.files[0];
-              if (!file) return;
-              file.text().then(text => {
-                try {
-                  const imported = JSON.parse(text);
-                  if (Array.isArray(imported)) {
-                    setNotes(imported);
-                    setSelectedIdx(null);
-                  } else {
-                    alert("Invalid format: expected an array of notes.");
-                  }
-                } catch {
-                  alert("Could not parse file as JSON.");
-                }
-              });
-            };
-            input.click();
-          }}
+          title={t("menubar.open")}
+          aria-label={t("menubar.open")}
+          onClick={() => { openScore(); }}
         >
           <svg viewBox="-2 0 60 66" width="18" height="18" aria-hidden="true">
             {UPLOAD_PATHS.map((d, i) => <path key={i} d={d} fill="#A2A49F" />)}
@@ -314,15 +315,43 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         <button
           className="menu-bar__btn"
           style={{ width: 36, height: 36, fontSize: 11, color: "#A2A49F", fontWeight: 600 }}
-          title={i18n.language === "es" ? "Switch to English" : "Cambiar a Español"}
-          aria-label={i18n.language === "es" ? "Switch to English" : "Cambiar a Español"}
+          title={i18n.language === "es" ? t("menubar.switchLangEN") : t("menubar.switchLangES")}
+          aria-label={i18n.language === "es" ? t("menubar.switchLangEN") : t("menubar.switchLangES")}
           onClick={() => { i18n.changeLanguage(i18n.language === "es" ? "en" : "es"); onAfterChange?.(); }}
         >
           {i18n.language === "es" ? "ES" : "EN"}
         </button>
 
-        <div className="menu-bar__separator" />
+        <button
+          className="menu-bar__btn"
+          title={t("shortcuts.title")}
+          aria-label={t("shortcuts.title")}
+          onClick={() => { setShowShortcuts(s => !s); }}
+        >
+          <svg viewBox="111.5 34 11 10" width="16" height="15" aria-hidden="true">
+            {KEYBOARD_ICON_PATHS.map((d, i) => <path key={i} d={d} fill={showShortcuts ? "#1767AE" : "#A2A49F"} />)}
+          </svg>
+        </button>
       </div>
+
+      {showShortcuts && (
+        <div className="shortcuts-overlay" onClick={() => setShowShortcuts(false)}>
+          <div className="shortcuts-overlay__content" onClick={(e) => e.stopPropagation()}>
+            <div className="shortcuts-overlay__header">
+              <span className="shortcuts-overlay__title">{t("shortcuts.title")}</span>
+              <button className="shortcuts-overlay__close" onClick={() => setShowShortcuts(false)}>✕</button>
+            </div>
+            <div className="shortcuts-overlay__grid">
+              {SHORTCUTS.map((s, i) => (
+                <div key={i} className="shortcuts-overlay__item">
+                  <span className="shortcuts-overlay__label">{s.label}</span>
+                  <span className="shortcuts-overlay__key">{s.key}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

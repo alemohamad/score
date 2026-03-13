@@ -21,11 +21,11 @@ export const STAFF_NOTES = [
 ];
 
 export const DURATION_KEYS = {
-  "1": { value: "whole",      labelKey: "duration.whole" },
-  "2": { value: "half",       labelKey: "duration.half" },
+  "1": { value: "sixteenth",  labelKey: "duration.sixteenth" },
+  "2": { value: "eighth",     labelKey: "duration.eighth" },
   "3": { value: "quarter",    labelKey: "duration.quarter" },
-  "4": { value: "eighth",     labelKey: "duration.eighth" },
-  "5": { value: "sixteenth",  labelKey: "duration.sixteenth" },
+  "4": { value: "half",       labelKey: "duration.half" },
+  "5": { value: "whole",      labelKey: "duration.whole" },
 };
 
 export const BEAT_VALUES = {
