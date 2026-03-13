@@ -242,7 +242,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         <div className="menu-bar__separator" />
 
         <button
-          className="menu-bar__btn"
+          className={`menu-bar__btn ${!isMuted ? "menu-bar__btn--active" : ""}`}
           title={isMuted ? t("playback.muted") : t("playback.sound")}
           aria-label={isMuted ? t("playback.muted") : t("playback.sound")}
           onClick={() => { setIsMuted(m => !m); onAfterChange?.(); }}
