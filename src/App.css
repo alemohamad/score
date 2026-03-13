@@ -8,6 +8,10 @@
 
 /* ─── Base / App ──────────────────────────────────────────────────────────── */
 
+:root {
+  --accent: #EE5BEC;
+}
+
 body {
   margin: 0;
 }
@@ -99,7 +103,7 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #1767AE;
+  background: var(--accent);
   border: none;
   margin-top: -6px;
   cursor: pointer;
@@ -115,13 +119,13 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #1767AE;
+  background: var(--accent);
   border: none;
   cursor: pointer;
 }
 
 .menu-bar__tempo-slider::-moz-range-progress {
-  background: #1767AE;
+  background: var(--accent);
   height: 4px;
   border-radius: 2px;
 }

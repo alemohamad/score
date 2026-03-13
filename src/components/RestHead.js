@@ -1,8 +1,9 @@
 import { REST_PATHS } from "../constants/svgPaths";
 import { STAFF_TOP, LINE_GAP, LABEL_Y } from "../constants/staff";
+import { ACCENT } from "../constants/colors";
 
 export default function RestHead({ x, duration, selected, dotted, ghost, hideLabel, restLabel }) {
-  const color = ghost ? "#1767AE" : selected ? "#e63946" : "#1a1a2e";
+  const color = ghost ? ACCENT : selected ? "#e63946" : "#1a1a2e";
   const opacity = ghost ? 0.7 : 1;
 
   const restPath = REST_PATHS[duration] || REST_PATHS.quarter;
@@ -31,7 +32,7 @@ export default function RestHead({ x, duration, selected, dotted, ghost, hideLab
 
       {!hideLabel && (
         <text x={x} y={LABEL_Y} textAnchor="middle" fontSize={14} fontWeight={600}
-          fill={ghost ? "#1767AE" : "#636363"}
+          fill={ghost ? ACCENT : "#636363"}
           fontFamily="system-ui, -apple-system, sans-serif">
           {restLabel}
         </text>

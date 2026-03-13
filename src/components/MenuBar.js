@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { NOTE_PATHS, REST_PATHS, ACCIDENTAL_PATHS } from "../constants/svgPaths";
+import { ACCENT } from "../constants/colors";
 import { TIME_SIGNATURES } from "../constants/music";
 
 const KEYBOARD_ICON_PATHS = [
@@ -109,7 +110,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           onClick={() => { setHideLabels(h => !h); onAfterChange?.(); }}
         >
           <svg viewBox="594 853 90 30" width="24" height="24" aria-hidden="true">
-            <path d={READ_PATH} fill={!hideLabels ? "#1767AE" : "#A2A49F"} />
+            <path d={READ_PATH} fill={!hideLabels ? ACCENT : "#A2A49F"} />
           </svg>
         </button>
 
@@ -143,7 +144,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
               onClick={() => { if (selectedIdx !== null) updateSelectedNote("duration", d.value); setDuration(d.value); onAfterChange?.(); }}
             >
               <svg viewBox={d.viewBox} width="24" height="24" aria-hidden="true">
-                <path d={NOTE_PATHS[d.pathKey].path} fill={duration === d.value ? "#1767AE" : "#A2A49F"} />
+                <path d={NOTE_PATHS[d.pathKey].path} fill={duration === d.value ? ACCENT : "#A2A49F"} />
               </svg>
             </button>
           );
@@ -158,8 +159,8 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("dotted", !note.dotted); } setDotted(d => !d); onAfterChange?.(); }}
         >
           <svg viewBox="0 0 36 84" width="24" height="24" aria-hidden="true">
-            <path d={NOTE_PATHS.quarterUp.path} fill={dotted ? "#1767AE" : "#A2A49F"} />
-            <circle cx="40" cy="71" r="5" fill={dotted ? "#1767AE" : "#A2A49F"} />
+            <path d={NOTE_PATHS.quarterUp.path} fill={dotted ? ACCENT : "#A2A49F"} />
+            <circle cx="40" cy="71" r="5" fill={dotted ? ACCENT : "#A2A49F"} />
           </svg>
         </button>
 
@@ -190,7 +191,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
             >
               <svg viewBox={`0 0 ${acc.width} ${acc.height}`} width={Math.round(acc.width / acc.height * a.iconHeight)} height={a.iconHeight} aria-hidden="true">
                 <g transform={`translate(${acc.translateX}, ${acc.translateY})`}>
-                  <path d={acc.path} fill={isActive ? "#1767AE" : "#A2A49F"} />
+                  <path d={acc.path} fill={isActive ? ACCENT : "#A2A49F"} />
                 </g>
               </svg>
             </button>
@@ -206,9 +207,9 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           onClick={() => { if (selectedIdx !== null) { const note = notes[selectedIdx]; updateSelectedNote("slur", !note.slur); } setSlur(s => { if (!s) setTriplet(false); return !s; }); onAfterChange?.(); }}
         >
           <svg viewBox="0 0 89 101" width="20" height="20" aria-hidden="true">
-            <path d="M27.0555311,68.458 L27.0555311,0.5499 C27.0555311,0.246 26.8153016,0 26.5052016,0 L24.0753016,0 C23.7752016,0 23.5252016,0.246 23.5252016,0.5499 L23.5252016,62.9409 C19.9353016,61.156 14.4553016,61.4799 9.29525157,64.166 C2.11520157,67.898 -1.71475843,74.75198 0.745205571,79.47396 C3.19528157,84.196983 11.0052016,85.00094 18.1853016,81.26894 C24.1753016,78.15499 27.0853016,72.852 27.0555311,68.458 Z" fill={slur ? "#1767AE" : "#A2A49F"} />
-            <path d="M88.0555311,68.458 L88.0555311,0.5499 C88.0555311,0.246 87.8153016,0 87.5052016,0 L85.0753016,0 C84.7752016,0 84.5252016,0.246 84.5252016,0.5499 L84.5252016,62.9409 C80.9353016,61.156 75.4553016,61.4799 70.2952516,64.166 C63.1152016,67.898 59.2852416,74.75198 61.7452056,79.47396 C64.1952816,84.196983 72.0052016,85.00094 79.1853016,81.26894 C85.1753016,78.15499 88.0853016,72.852 88.0555311,68.458 Z" fill={slur ? "#1767AE" : "#A2A49F"} />
-            <path d="M16.9046058,87.8058574 C24.3710665,92.9235954 33.586914,95.4824644 44.5521484,95.4824644 C55.5173828,95.4824644 64.4494253,92.9235954 71.3482759,87.8058574 C72.3965529,88.3745407 72.8509422,88.8103165 72.7114439,89.1131848 C69.2011904,96.7343857 58.5246616,100.641188 44.5521484,100.641188 C30.3947821,100.641188 19.7635492,96.937373 15.8280929,89.1131848 C15.7079959,88.8744167 16.0668336,88.4386409 16.9046058,87.8058574 Z" fill={slur ? "#1767AE" : "#A2A49F"} />
+            <path d="M27.0555311,68.458 L27.0555311,0.5499 C27.0555311,0.246 26.8153016,0 26.5052016,0 L24.0753016,0 C23.7752016,0 23.5252016,0.246 23.5252016,0.5499 L23.5252016,62.9409 C19.9353016,61.156 14.4553016,61.4799 9.29525157,64.166 C2.11520157,67.898 -1.71475843,74.75198 0.745205571,79.47396 C3.19528157,84.196983 11.0052016,85.00094 18.1853016,81.26894 C24.1753016,78.15499 27.0853016,72.852 27.0555311,68.458 Z" fill={slur ? ACCENT : "#A2A49F"} />
+            <path d="M88.0555311,68.458 L88.0555311,0.5499 C88.0555311,0.246 87.8153016,0 87.5052016,0 L85.0753016,0 C84.7752016,0 84.5252016,0.246 84.5252016,0.5499 L84.5252016,62.9409 C80.9353016,61.156 75.4553016,61.4799 70.2952516,64.166 C63.1152016,67.898 59.2852416,74.75198 61.7452056,79.47396 C64.1952816,84.196983 72.0052016,85.00094 79.1853016,81.26894 C85.1753016,78.15499 88.0853016,72.852 88.0555311,68.458 Z" fill={slur ? ACCENT : "#A2A49F"} />
+            <path d="M16.9046058,87.8058574 C24.3710665,92.9235954 33.586914,95.4824644 44.5521484,95.4824644 C55.5173828,95.4824644 64.4494253,92.9235954 71.3482759,87.8058574 C72.3965529,88.3745407 72.8509422,88.8103165 72.7114439,89.1131848 C69.2011904,96.7343857 58.5246616,100.641188 44.5521484,100.641188 C30.3947821,100.641188 19.7635492,96.937373 15.8280929,89.1131848 C15.7079959,88.8744167 16.0668336,88.4386409 16.9046058,87.8058574 Z" fill={slur ? ACCENT : "#A2A49F"} />
           </svg>
         </button>
 
@@ -220,21 +221,21 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         >
           <svg viewBox="0 0 44 50" width="24" height="24" style={{marginTop: -3}} aria-hidden="true">
             {/* 3 beamed eighth notes */}
-            <ellipse cx="6" cy="44" rx="5" ry="3.5" transform="rotate(-20 6 44)" fill={triplet ? "#1767AE" : "#A2A49F"} />
-            <ellipse cx="20" cy="44" rx="5" ry="3.5" transform="rotate(-20 20 44)" fill={triplet ? "#1767AE" : "#A2A49F"} />
-            <ellipse cx="34" cy="44" rx="5" ry="3.5" transform="rotate(-20 34 44)" fill={triplet ? "#1767AE" : "#A2A49F"} />
+            <ellipse cx="6" cy="44" rx="5" ry="3.5" transform="rotate(-20 6 44)" fill={triplet ? ACCENT : "#A2A49F"} />
+            <ellipse cx="20" cy="44" rx="5" ry="3.5" transform="rotate(-20 20 44)" fill={triplet ? ACCENT : "#A2A49F"} />
+            <ellipse cx="34" cy="44" rx="5" ry="3.5" transform="rotate(-20 34 44)" fill={triplet ? ACCENT : "#A2A49F"} />
             {/* Stems */}
-            <line x1="10.5" y1="42" x2="10.5" y2="18" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="2" />
-            <line x1="24.5" y1="42" x2="24.5" y2="18" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="2" />
-            <line x1="38.5" y1="42" x2="38.5" y2="18" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="2" />
+            <line x1="10.5" y1="42" x2="10.5" y2="18" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="2" />
+            <line x1="24.5" y1="42" x2="24.5" y2="18" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="2" />
+            <line x1="38.5" y1="42" x2="38.5" y2="18" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="2" />
             {/* Beam */}
-            <rect x="9.5" y="16" width="30" height="3" fill={triplet ? "#1767AE" : "#A2A49F"} />
+            <rect x="9.5" y="16" width="30" height="3" fill={triplet ? ACCENT : "#A2A49F"} />
             {/* Bracket and 3 */}
-            <line x1="9.5" y1="12" x2="9.5" y2="8" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="1.5" />
-            <line x1="9.5" y1="8" x2="17" y2="8" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="1.5" />
-            <line x1="27" y1="8" x2="38.5" y2="8" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="1.5" />
-            <line x1="38.5" y1="12" x2="38.5" y2="8" stroke={triplet ? "#1767AE" : "#A2A49F"} strokeWidth="1.5" />
-            <text x="22" y="11" textAnchor="middle" fontSize="11" fontWeight="bold" fontFamily="Georgia, serif" fill={triplet ? "#1767AE" : "#A2A49F"}>3</text>
+            <line x1="9.5" y1="12" x2="9.5" y2="8" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="1.5" />
+            <line x1="9.5" y1="8" x2="17" y2="8" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="1.5" />
+            <line x1="27" y1="8" x2="38.5" y2="8" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="1.5" />
+            <line x1="38.5" y1="12" x2="38.5" y2="8" stroke={triplet ? ACCENT : "#A2A49F"} strokeWidth="1.5" />
+            <text x="22" y="11" textAnchor="middle" fontSize="11" fontWeight="bold" fontFamily="Georgia, serif" fill={triplet ? ACCENT : "#A2A49F"}>3</text>
           </svg>
         </button>
 
@@ -252,7 +253,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
             </svg>
           ) : (
             <svg viewBox="0 11 98 78" width="18" height="18" aria-hidden="true">
-              {SOUND_ON_PATHS.map((d, i) => <path key={i} d={d} fill="#1767AE" />)}
+              {SOUND_ON_PATHS.map((d, i) => <path key={i} d={d} fill={ACCENT} />)}
             </svg>
           )}
         </button>
@@ -289,7 +290,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           min="40" max="240" value={tempo}
           onChange={(e) => { setTempo(Number(e.target.value)); onAfterChange?.(); }}
           className="menu-bar__tempo-slider"
-          style={{ background: `linear-gradient(to right, #1767AE ${(tempo - 40) / 200 * 100}%, #A2A49F ${(tempo - 40) / 200 * 100}%)` }}
+          style={{ background: `linear-gradient(to right, ${ACCENT} ${(tempo - 40) / 200 * 100}%, #A2A49F ${(tempo - 40) / 200 * 100}%)` }}
         />
 
         <div className="menu-bar__separator" />
@@ -343,7 +344,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           onClick={() => { setShowShortcuts(s => !s); }}
         >
           <svg viewBox="111.5 34 11 10" width="16" height="15" aria-hidden="true">
-            {KEYBOARD_ICON_PATHS.map((d, i) => <path key={i} d={d} fill={showShortcuts ? "#1767AE" : "#A2A49F"} />)}
+            {KEYBOARD_ICON_PATHS.map((d, i) => <path key={i} d={d} fill={showShortcuts ? ACCENT : "#A2A49F"} />)}
           </svg>
         </button>
       </div>
