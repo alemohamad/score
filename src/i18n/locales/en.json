@@ -21,6 +21,8 @@
     "natural": "Natural",
     "noAccidental": "No accidental",
     "slur": "Tie",
+    "upBow": "Up bow",
+    "downBow": "Down bow",
     "scoreHas": "Score has",
     "note": "note",
     "notes": "notes"
@@ -72,6 +74,8 @@
     "dotted": "Dotted",
     "triplet": "Triplet",
     "slur": "Tie",
+    "upBow": "Up bow",
+    "downBow": "Down bow",
     "rest": "Rest",
     "space": "space",
     "delete": "Delete last note",

@@ -35,6 +35,7 @@ export default function App() {
   const [triplet,     setTriplet]     = useState(false);
   const [slur,        setSlur]        = useState(false);
   const [accidental,  setAccidental]  = useState(null);
+  const [bowing,      setBowing]      = useState(null);
   const [noteSystem,  setNoteSystem]  = useState("solfeo");
   const [ghostNote,   setGhostNote]   = useState(null);
   const [timeSignature, setTimeSignature] = useState(TIME_SIGNATURES[0]);
@@ -125,6 +126,7 @@ export default function App() {
         dotted,
         triplet,
         accidental,
+        bowing,
         id: Date.now() + Math.random(),
         startBeat: snappedBeat,
       };
@@ -154,9 +156,10 @@ export default function App() {
       return newNotes;
     });
     setAccidental(null);
+    setBowing(null);
     setDotted(false);
     setSelectedIdx(null);
-  }, [duration, dotted, triplet, slur, accidental]);
+  }, [duration, dotted, triplet, slur, accidental, bowing]);
 
   // ── Add a rest ────────────────────────────────────────────────────────────────
   const addRest = useCallback(() => {
@@ -235,6 +238,18 @@ export default function App() {
     if (e.shiftKey && key === "s") { e.preventDefault(); saveScore(); return; }
     if (e.shiftKey && key === "o") { e.preventDefault(); openScore(); return; }
     if (e.shiftKey && key === "backspace") { e.preventDefault(); setNotes([]); setRepeats({}); setSelectedIdx(null); return; }
+    if (e.shiftKey && key === "u") {
+      const toggle = b => b === "up" ? null : "up";
+      if (selectedIdx !== null) updateSelectedNote("bowing", toggle(notes[selectedIdx]?.bowing));
+      setBowing(toggle);
+      return;
+    }
+    if (e.shiftKey && key === "d") {
+      const toggle = b => b === "down" ? null : "down";
+      if (selectedIdx !== null) updateSelectedNote("bowing", toggle(notes[selectedIdx]?.bowing));
+      setBowing(toggle);
+      return;
+    }
 
     if (DURATION_KEYS[e.key]) {
       const newDur = DURATION_KEYS[e.key].value;
@@ -284,6 +299,7 @@ export default function App() {
       setAccidental(toggle);
       return;
     }
+
 
     if (key === "0") {
       setNoteSystem(ns => ns === "solfeo" ? "letter" : "solfeo");
@@ -465,7 +481,7 @@ export default function App() {
       className="app"
     >
       {/* Menu bar */}
-      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} slur={slur} setSlur={setSlur} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} selectedIdx={selectedIdx} setSelectedIdx={setSelectedIdx} updateSelectedNote={updateSelectedNote} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
+      <MenuBar duration={duration} setDuration={setDuration} dotted={dotted} setDotted={setDotted} triplet={triplet} setTriplet={setTriplet} slur={slur} setSlur={setSlur} bowing={bowing} setBowing={setBowing} addRest={addRest} accidental={accidental} setAccidental={setAccidental} isMuted={isMuted} setIsMuted={setIsMuted} isPlaying={isPlaying} startPlayback={startPlayback} stopPlayback={stopPlayback} tempo={tempo} setTempo={setTempo} hasNotes={notes.length > 0} noteCount={notes.length} notes={notes} setNotes={setNotes} selectedIdx={selectedIdx} setSelectedIdx={setSelectedIdx} updateSelectedNote={updateSelectedNote} noteSystem={noteSystem} setNoteSystem={setNoteSystem} timeSignature={timeSignature} setTimeSignature={setTimeSignature} hideLabels={hideLabels} setHideLabels={setHideLabels} showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} saveScore={saveScore} openScore={openScore} onAfterChange={focusContainer} />
 
       {/* Staff */}
       <div className="staff-container-wrapper">
@@ -728,6 +744,37 @@ export default function App() {
                             />
                           </g>
                         );
+                      })}
+
+                      {/* Bowing marks */}
+                      {lineNotes.map((note) => {
+                        if (note.isRest || !note.bowing) return null;
+                        const bx = noteX(note.beatPosition) + (sixteenthXAdjust.get(note.id) || 0);
+                        const by = staffY(note.pos);
+                        const markY = Math.min(by, STAFF_TOP) - 16;
+                        if (note.bowing === "up") {
+                          // Up bow: V shape (from Music-upbow.svg), scaled to ~8x12
+                          const s = 0.32;
+                          return (
+                            <g key={`bow-${note.id}`} transform={`translate(${bx - 25 * s / 2}, ${markY - 40 * s})`}>
+                              <svg viewBox="572 131 25 40" width={25 * s} height={40 * s}>
+                                <polygon points="596.6,131.1 584.3,170.1 572.4,131.1 575.7,131.1 584.3,159.7 593.5,131.1" fill="#1a1a2e" />
+                              </svg>
+                            </g>
+                          );
+                        }
+                        if (note.bowing === "down") {
+                          // Down bow: π shape (from Music-downbow.svg), scaled to ~10x10
+                          const s = 0.32;
+                          return (
+                            <g key={`bow-${note.id}`} transform={`translate(${bx - 32 * s / 2}, ${markY - 33 * s})`}>
+                              <svg viewBox="491 184 32 33" width={32 * s} height={33 * s}>
+                                <polygon points="493,217 491,217 491,184 523,184 523,217 521,217 521,198 493,198" fill="#1a1a2e" />
+                              </svg>
+                            </g>
+                          );
+                        }
+                        return null;
                       })}
 
                       {/* Slur/tie curves */}

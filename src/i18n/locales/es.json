@@ -21,6 +21,8 @@
     "natural": "Natural",
     "noAccidental": "Sin alteración",
     "slur": "Ligadura",
+    "upBow": "Arco hacia arriba",
+    "downBow": "Arco hacia abajo",
     "scoreHas": "La partitura tiene",
     "note": "nota",
     "notes": "notas"
@@ -72,6 +74,8 @@
     "dotted": "Puntillo",
     "triplet": "Tresillo",
     "slur": "Ligadura",
+    "upBow": "Arco hacia arriba",
+    "downBow": "Arco hacia abajo",
     "rest": "Silencio",
     "space": "espacio",
     "delete": "Borrar última nota",

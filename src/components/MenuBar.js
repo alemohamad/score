@@ -65,7 +65,7 @@ const UPLOAD_PATHS = [
   "M46,65 C48.6521649,65 51.195704,63.9464341 53.0710678,62.0710703 C54.9464316,60.1957065 56.0000611,57.6521674 56.0000611,55 L56.0000611,19.6600025 C56.0083238,17.5363188 55.165548,15.4978098 53.66,14 L43,3.34000248 C41.4984232,1.84009391 39.4623704,0.998333557 37.34,1 L10,1 C4.4771525,1 2.27373675e-13,5.47715498 2.27373675e-13,11 L2.27373675e-13,55 C2.27373675e-13,57.6521674 1.0535684,60.1957065 2.92893219,62.0710703 C4.80429597,63.9464341 7.3478351,65 10,65 L46,65 Z M8,55.0000025 L8,11.0000025 C8,9.89543298 8.8954305,9.00000248 10,9.00000248 L37.34,9.00000248 L48,19.6600025 L48,55.0000025 C48,56.104572 47.1045695,57.0000025 46,57.0000025 L10,57.0000025 C8.8954305,57.0000025 8,56.104572 8,55.0000025 Z",
 ];
 
-export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, slur, setSlur, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, selectedIdx, setSelectedIdx, updateSelectedNote, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
+export default function MenuBar({ duration, setDuration, dotted, setDotted, triplet, setTriplet, slur, setSlur, bowing, setBowing, addRest, accidental, setAccidental, isMuted, setIsMuted, isPlaying, startPlayback, stopPlayback, tempo, setTempo, hasNotes, noteCount, notes, setNotes, selectedIdx, setSelectedIdx, updateSelectedNote, noteSystem, setNoteSystem, timeSignature, setTimeSignature, hideLabels, setHideLabels, showShortcuts, setShowShortcuts, saveScore, openScore, onAfterChange }) {
   const { t } = useTranslation();
 
   const dottedLabel = t("status.dotted");
@@ -90,6 +90,8 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         { label: t("shortcuts.natural"), keys: ["N"] },
         { label: t("shortcuts.dotted"), keys: ["."] },
         { label: t("shortcuts.slur"), keys: [","] },
+        { label: t("shortcuts.upBow"), keys: [{ type: "shift" }, "U"] },
+        { label: t("shortcuts.downBow"), keys: [{ type: "shift" }, "D"] },
         { label: t("shortcuts.triplet"), keys: ["["] },
         { label: t("shortcuts.rest"), keys: [{ type: "space", label: t("shortcuts.space") }] },
       ],
@@ -229,6 +231,30 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
             </button>
           );
         })}
+
+        <div className="menu-bar__separator" />
+
+        <button
+          className={`menu-bar__btn ${bowing === "up" ? "menu-bar__btn--active" : ""}`}
+          title={t("status.upBow")}
+          aria-label={t("status.upBow")}
+          onClick={() => { const newVal = bowing === "up" ? null : "up"; if (selectedIdx !== null) updateSelectedNote("bowing", newVal); setBowing(newVal); onAfterChange?.(); }}
+        >
+          <svg viewBox="572 131 25 40" width="8" height="13" aria-hidden="true">
+            <polygon points="596.6,131.1 584.3,170.1 572.4,131.1 575.7,131.1 584.3,159.7 593.5,131.1" fill={bowing === "up" ? ACCENT : "#A2A49F"} />
+          </svg>
+        </button>
+
+        <button
+          className={`menu-bar__btn ${bowing === "down" ? "menu-bar__btn--active" : ""}`}
+          title={t("status.downBow")}
+          aria-label={t("status.downBow")}
+          onClick={() => { const newVal = bowing === "down" ? null : "down"; if (selectedIdx !== null) updateSelectedNote("bowing", newVal); setBowing(newVal); onAfterChange?.(); }}
+        >
+          <svg viewBox="491 184 32 33" width="11" height="11" aria-hidden="true">
+            <polygon points="493,217 491,217 491,184 523,184 523,217 521,217 521,198 493,198" fill={bowing === "down" ? ACCENT : "#A2A49F"} />
+          </svg>
+        </button>
 
         <div className="menu-bar__separator" />
 
