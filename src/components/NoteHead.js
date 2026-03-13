@@ -1,5 +1,6 @@
 import { NOTE_PATHS, ACCIDENTAL_PATHS } from "../constants/svgPaths";
-import { LABEL_Y } from "../constants/staff";
+import { LABEL_Y, FINGER_Y } from "../constants/staff";
+import { VIOLIN_FINGERING } from "../constants/music";
 import { ACCENT } from "../constants/colors";
 import { staffY } from "../utils/staff";
 
@@ -66,6 +67,15 @@ export default function NoteHead({ x, y, duration, selected, dotted, accidental,
 
       {/* Dot (puntillo) */}
       {dotted && !ghost && <circle cx={x + 12} cy={y - 1} r={2.5} fill={color}/>}
+
+      {/* Finger number */}
+      {!hideLabel && !ghost && pos !== undefined && VIOLIN_FINGERING[pos] !== undefined && (
+        <text x={x} y={FINGER_Y} textAnchor="middle" fontSize={14} fontWeight={600}
+          fill="#636363"
+          fontFamily="system-ui, -apple-system, sans-serif">
+          {VIOLIN_FINGERING[pos]}
+        </text>
+      )}
 
       {/* Note label */}
       {noteLabel && !hideLabel && (

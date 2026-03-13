@@ -5,7 +5,8 @@ export const NOTE_START_X  = 110;
 export const BEAT_WIDTH    = 80;
 export const MEASURES_PER_LINE = 4;
 export const NOTE_CENTER_OFFSET = 30;
-export const LABEL_Y       = STAFF_TOP + LINE_GAP * 4 + 57;
+export const LABEL_Y       = 162;
+export const FINGER_Y      = 10;
 
 export const SIXTEENTH_GAP_ADJUST = -1;
 export const STEM_LENGTH    = 28;

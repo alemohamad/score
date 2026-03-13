@@ -70,6 +70,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
   const SHORTCUTS = [
     { label: t("shortcuts.notation"), key: "0" },
     { label: t("shortcuts.sharp"), key: "V" },
+    { label: t("shortcuts.labels"), key: "?" },
     { label: t("shortcuts.timeSignature"), key: "/" },
     { label: t("shortcuts.sixteenth"), key: "1" },
     { label: t("shortcuts.flat"), key: "B" },
@@ -338,7 +339,7 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         </button>
 
         <button
-          className="menu-bar__btn"
+          className={`menu-bar__btn ${showShortcuts ? "menu-bar__btn--active" : ""}`}
           title={t("shortcuts.title")}
           aria-label={t("shortcuts.title")}
           onClick={() => { setShowShortcuts(s => !s); }}

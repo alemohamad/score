@@ -300,6 +300,8 @@ export default function App() {
       return;
     }
 
+    if (key === "?") { setHideLabels(h => !h); return; }
+
     if (key === "p") {
       if (isPlaying) stopPlayback(); else startPlayback();
       return;

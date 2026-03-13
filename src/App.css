@@ -115,6 +115,7 @@ body {
   border: none;
   margin-top: -6px;
   cursor: pointer;
+  box-shadow: 0 0 4px var(--accent);
 }
 
 .menu-bar__tempo-slider::-moz-range-track {
@@ -128,6 +129,7 @@ body {
   height: 16px;
   border-radius: 50%;
   background: var(--accent);
+  box-shadow: 0 0 4px var(--accent);
   border: none;
   cursor: pointer;
 }
@@ -178,7 +180,9 @@ body {
 
 .shortcuts-overlay__content {
   background: #2a2a2c;
-  border-radius: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 24px rgba(238, 91, 236, 0.3);
   padding: 24px 32px;
 }
 

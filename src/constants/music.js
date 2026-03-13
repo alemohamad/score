@@ -20,6 +20,13 @@ export const STAFF_NOTES = [
   { note: "B", octave: 5, pos: 16 },
 ];
 
+// First-position violin fingerings by staff position (0–16)
+// G string: G3=0, A3=1, B3=2, C4=3
+// D string: D4=0, E4=1, F4=2, G4=3
+// A string: A4=0, B4=1, C5=2, D5=3
+// E string: E5=0, F5=1, G5=2, A5=3, B5=4
+export const VIOLIN_FINGERING = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 4];
+
 export const DURATION_KEYS = {
   "1": { value: "sixteenth",  labelKey: "duration.sixteenth" },
   "2": { value: "eighth",     labelKey: "duration.eighth" },
