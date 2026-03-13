@@ -58,14 +58,15 @@ export default function App() {
 
   const saveScore = useCallback(() => {
     if (notes.length === 0) return;
-    const blob = new Blob([JSON.stringify(notes, null, 2)], { type: "application/json" });
+    const data = { notes, repeats, timeSignature, noteSystem };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "score.json";
     a.click();
     URL.revokeObjectURL(url);
-  }, [notes]);
+  }, [notes, repeats, timeSignature, noteSystem]);
 
   const openScore = useCallback(() => {
     const input = document.createElement("input");
@@ -78,10 +79,18 @@ export default function App() {
         try {
           const imported = JSON.parse(text);
           if (Array.isArray(imported)) {
+            // Legacy format: just an array of notes
             setNotes(imported);
+            setRepeats({});
+            setSelectedIdx(null);
+          } else if (imported && Array.isArray(imported.notes)) {
+            setNotes(imported.notes);
+            if (imported.repeats) setRepeats(imported.repeats);
+            if (imported.timeSignature) setTimeSignature(imported.timeSignature);
+            if (imported.noteSystem) setNoteSystem(imported.noteSystem);
             setSelectedIdx(null);
           } else {
-            alert("Invalid format: expected an array of notes.");
+            alert("Invalid format.");
           }
         } catch {
           alert("Could not parse file as JSON.");
@@ -479,6 +488,21 @@ export default function App() {
               onTouchMove={e => { e.preventDefault(); handleNoteDragMove(e, lineIdx); handleStaffPointerMove(e, lineIdx); }}
             >
               <g transform="translate(0,18)">
+                {/* Measure number */}
+                {lineIdx > 0 && (
+                  <text
+                    x={24}
+                    y={40}
+                    fontSize={12}
+                    fontWeight={600}
+                    fontFamily="system-ui, -apple-system, sans-serif"
+                    fill="#000000"
+                    textAnchor="end"
+                  >
+                    {lineIdx * MEASURES_PER_LINE + 1}
+                  </text>
+                )}
+
                 {/* Staff lines */}
                 {[0,1,2,3,4].map(i => (
                   <line key={i}
