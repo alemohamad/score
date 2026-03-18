@@ -26,8 +26,8 @@ const DURATIONS = [
 ];
 
 const REST_VIEWBOXES = {
-  whole:     "-5 -36 52 84",
-  half:      "-5 -36 52 84",
+  whole:     "-5 -41 52 84",
+  half:      "-5 -32 52 84",
   quarter:   "-4 -15 26 84",
   eighth:    "-4 -14 32 84",
   sixteenth: "-2 -9 30 84",
@@ -80,20 +80,20 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
         { label: t("shortcuts.quarter"), keys: ["3"] },
         { label: t("shortcuts.half"), keys: ["4"] },
         { label: t("shortcuts.whole"), keys: ["5"] },
+        { label: t("shortcuts.rest"), keys: [{ type: "space", label: t("shortcuts.space") }] },
       ],
     },
     {
       title: t("shortcuts.groupModifiers"),
       items: [
-        { label: t("shortcuts.sharp"), keys: ["V"] },
-        { label: t("shortcuts.flat"), keys: ["B"] },
-        { label: t("shortcuts.natural"), keys: ["N"] },
+        { label: t("shortcuts.sharp"), keys: [{ type: "shift" }, "V"] },
+        { label: t("shortcuts.flat"), keys: [{ type: "shift" }, "B"] },
+        { label: t("shortcuts.natural"), keys: [{ type: "shift" }, "N"] },
         { label: t("shortcuts.dotted"), keys: ["."] },
-        { label: t("shortcuts.slur"), keys: [","] },
+        { label: t("shortcuts.slur"), keys: [{ type: "shift" }, "T"] },
         { label: t("shortcuts.upBow"), keys: [{ type: "shift" }, "U"] },
         { label: t("shortcuts.downBow"), keys: [{ type: "shift" }, "D"] },
         { label: t("shortcuts.triplet"), keys: ["["] },
-        { label: t("shortcuts.rest"), keys: [{ type: "space", label: t("shortcuts.space") }] },
       ],
     },
     {
@@ -184,6 +184,17 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           );
         })}
 
+        <button
+          className="menu-bar__btn"
+          title={restLabel}
+          aria-label={restLabel}
+          onClick={() => { addRest(); onAfterChange?.(); }}
+        >
+          <svg viewBox={REST_VIEWBOXES[duration]} width="24" height="24" aria-hidden="true">
+            <path d={REST_PATHS[duration].path} fill="#A2A49F" />
+          </svg>
+        </button>
+
         <div className="menu-bar__separator" />
 
         <button
@@ -195,17 +206,6 @@ export default function MenuBar({ duration, setDuration, dotted, setDotted, trip
           <svg viewBox="0 0 36 84" width="24" height="24" aria-hidden="true">
             <path d={NOTE_PATHS.quarterUp.path} fill={dotted ? ACCENT : "#A2A49F"} />
             <circle cx="40" cy="71" r="5" fill={dotted ? ACCENT : "#A2A49F"} />
-          </svg>
-        </button>
-
-        <button
-          className="menu-bar__btn"
-          title={restLabel}
-          aria-label={restLabel}
-          onClick={() => { addRest(); onAfterChange?.(); }}
-        >
-          <svg viewBox={REST_VIEWBOXES[duration]} width="24" height="24" aria-hidden="true">
-            <path d={REST_PATHS[duration].path} fill="#A2A49F" />
           </svg>
         </button>
 

@@ -55,7 +55,7 @@
   },
   "shortcuts": {
     "notation": "Notación",
-    "labels": "Etiquetas",
+    "labels": "Mostrar/ocultar etiquetas",
     "title": "Atajos de teclado",
     "groupDurations": "Duraciones",
     "groupModifiers": "Modificadores",
@@ -80,7 +80,7 @@
     "space": "espacio",
     "delete": "Borrar última nota",
     "timeSignature": "Compás",
-    "language": "Idioma",
+    "language": "Cambiar idioma",
     "save": "Guardar",
     "open": "Abrir",
     "mute": "Silenciar",

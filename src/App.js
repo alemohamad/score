@@ -7,7 +7,7 @@ import "./App.css";
 // Constants
 import { STAFF_NOTES, DURATION_KEYS, TIME_SIGNATURES, KEY_TO_NOTE } from "./constants/music";
 import { STAFF_TOP, LINE_GAP, STAFF_LEFT, NOTE_START_X, BEAT_WIDTH, MEASURES_PER_LINE, SIXTEENTH_GAP_ADJUST } from "./constants/staff";
-import { G_CLEF, REPEAT_PATHS } from "./constants/svgPaths";
+import { G_CLEF, REPEAT_PATHS, TIME_SIG_NUMBERS } from "./constants/svgPaths";
 
 // Utils
 import { noteName, getNoteBeatValue, getDurationBeatValue, getTotalBeats, snapToGrid } from "./utils/music";
@@ -238,6 +238,32 @@ export default function App() {
     if (e.shiftKey && key === "s") { e.preventDefault(); saveScore(); return; }
     if (e.shiftKey && key === "o") { e.preventDefault(); openScore(); return; }
     if (e.shiftKey && key === "backspace") { e.preventDefault(); setNotes([]); setRepeats({}); setSelectedIdx(null); return; }
+    if (e.shiftKey && key === "v") {
+      const toggle = a => a === "sharp" ? null : "sharp";
+      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
+      setAccidental(toggle);
+      return;
+    }
+    if (e.shiftKey && key === "b") {
+      const toggle = a => a === "flat" ? null : "flat";
+      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
+      setAccidental(toggle);
+      return;
+    }
+    if (e.shiftKey && key === "n") {
+      const toggle = a => a === "natural" ? null : "natural";
+      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
+      setAccidental(toggle);
+      return;
+    }
+    if (e.shiftKey && key === "t") {
+      if (selectedIdx !== null) {
+        const note = notes[selectedIdx];
+        updateSelectedNote("slur", !note.slur);
+      }
+      setSlur(s => { if (!s) setTriplet(false); return !s; });
+      return;
+    }
     if (e.shiftKey && key === "u") {
       const toggle = b => b === "up" ? null : "up";
       if (selectedIdx !== null) updateSelectedNote("bowing", toggle(notes[selectedIdx]?.bowing));
@@ -271,32 +297,6 @@ export default function App() {
         updateSelectedNote("triplet", !note.triplet);
       }
       setTriplet(t => { if (!t) setSlur(false); return !t; });
-      return;
-    }
-    if (key === ",") {
-      if (selectedIdx !== null) {
-        const note = notes[selectedIdx];
-        updateSelectedNote("slur", !note.slur);
-      }
-      setSlur(s => { if (!s) setTriplet(false); return !s; });
-      return;
-    }
-    if (key === "v") {
-      const toggle = a => a === "sharp" ? null : "sharp";
-      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
-      setAccidental(toggle);
-      return;
-    }
-    if (key === "b") {
-      const toggle = a => a === "flat" ? null : "flat";
-      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
-      setAccidental(toggle);
-      return;
-    }
-    if (key === "n") {
-      const toggle = a => a === "natural" ? null : "natural";
-      if (selectedIdx !== null) updateSelectedNote("accidental", toggle(notes[selectedIdx]?.accidental));
-      setAccidental(toggle);
       return;
     }
 
@@ -485,7 +485,12 @@ export default function App() {
 
       {/* Staff */}
       <div className="staff-container-wrapper">
-      <div className="staff-container" style={{ maxWidth: staffWidth + 30 }}>
+      <div className="staff-container" style={{
+        maxWidth: staffWidth + 30,
+        transform: 'scale(0.76)',
+        transformOrigin: 'top center',
+        marginBottom: -((72 + totalLines * (LINE_GAP * 4 + 130) + Math.max(0, totalLines - 1) * 36) * 0.24)
+      }}>
         {Array.from({ length: totalLines }).map((_, lineIdx) => {
           const lineNotes = getNotesForLine(lineIdx);
           const isCurrentLine = lineIdx === currentLine;
@@ -538,18 +543,18 @@ export default function App() {
                 </g>
 
                 {/* Time signature (first line only) */}
-                {lineIdx === 0 && (
+                {lineIdx === 0 && TIME_SIG_NUMBERS[timeSignature.beats] && TIME_SIG_NUMBERS[timeSignature.beatValue] && (
                   <g>
-                    <text x={STAFF_LEFT + 65} y={STAFF_TOP + LINE_GAP * 1}
-                      fontSize={60} fontFamily="'Bravura Text', Georgia, serif" fontWeight={400} fill="#1a1a2e"
-                      textAnchor="middle">
-                      {String.fromCharCode(0xE080 + timeSignature.beats)}
-                    </text>
-                    <text x={STAFF_LEFT + 65} y={STAFF_TOP + LINE_GAP * 3}
-                      fontSize={60} fontFamily="'Bravura Text', Georgia, serif" fontWeight={400} fill="#1a1a2e"
-                      textAnchor="middle">
-                      {String.fromCharCode(0xE080 + timeSignature.beatValue)}
-                    </text>
+                    <svg x={STAFF_LEFT + 47} y={STAFF_TOP - LINE_GAP * 0.5}
+                      width={36} height={LINE_GAP * 2 + 4}
+                      viewBox={TIME_SIG_NUMBERS[timeSignature.beats].viewBox}>
+                      <path d={TIME_SIG_NUMBERS[timeSignature.beats].path} fill="#1a1a2e" />
+                    </svg>
+                    <svg x={STAFF_LEFT + 47} y={STAFF_TOP + LINE_GAP * 2 - 2}
+                      width={36} height={LINE_GAP * 2 + 4}
+                      viewBox={TIME_SIG_NUMBERS[timeSignature.beatValue].viewBox}>
+                      <path d={TIME_SIG_NUMBERS[timeSignature.beatValue].path} fill="#1a1a2e" />
+                    </svg>
                   </g>
                 )}
 
